@@ -27,7 +27,9 @@ sequenceDiagram
   AI->>Local: phase.yaml 更新
 
   Note over User,GA: フェーズ 2 business_requirements
-  AI->>Local: business-requirements.md に出力
+  AI->>User: ヒアリング（目的・ステークホルダー・制約等）
+  User->>AI: 回答
+  AI->>Local: business-requirements.md に出力（要望＋ヒアリング結果を反映）
   AI->>User: ntfy でレビュー依頼通知
   User->>AI: チャットで「承認」
   AI->>Local: phase.yaml 更新
@@ -60,7 +62,7 @@ sequenceDiagram
 | フェーズ | 名前 | 成果物 | 承認方法 |
 | --- | --- | --- | --- |
 | 1 | request | `request.yaml` | ユーザー承認 |
-| 2 | business_requirements | `business-requirements.md` | ユーザー承認 |
+| 2 | business_requirements | `business-requirements.md`（ヒアリング実施のうえ作成） | ユーザー承認 |
 | 3 | system_requirements | `system-requirements.md` | ユーザー承認 |
 | 4 | detailed_design | `detailed-design.md` | ユーザー承認 |
 | 5 | development | ローカルコミット | 実装完了で自動遷移 |
@@ -110,7 +112,7 @@ sequenceDiagram
 
 1. `issues/` 配下の既存ディレクトリをスキャンして次の番号を決定
 2. `issues/issue_XXX/` ディレクトリを作成
-3. 本スキルの `assets/` から `request.yaml`, `phase.yaml` をコピー
+3. 本スキルの `./assets/` から `request.yaml`, `phase.yaml` をコピー（編集正本は .rulesync 側の assets）
 4. 要望を `request.yaml` に記録
 5. `phase.yaml` を `current_phase: 1`, `waiting_approval: true`, フェーズ 1 の `status: in_progress` で更新
 6. ntfy でレビュー依頼を通知し、**ユーザーの承認を待つ**（承認後にフェーズ 2 へ進む）

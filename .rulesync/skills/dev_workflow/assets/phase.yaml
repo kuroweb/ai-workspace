@@ -1,4 +1,6 @@
 # Issue のフェーズ管理ファイル
+# 各フェーズで AI が current_phase / status / waiting_approval を更新する。
+
 current_phase: 1
 waiting_approval: false
 
