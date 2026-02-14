@@ -8,7 +8,7 @@ projects:
     path: "~/environment/ai-workspace"
     repo: "github.com/kuroweb/ai-workspace"
     default_branch: master
-    review_method: pr
+    review_method: local_diff
     notes: |
       - ai-workspace 開発用プロジェクト
       - Issue 単位の開発フロー（要望→要件→設計→実装→PR）を管理

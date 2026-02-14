@@ -1,8 +1,6 @@
 # ai-workspace
 
-AI との協業ワークフローを管理する基盤リポジトリ。
-
-開発対象リポジトリの外側に配置し、要望 → ビジネス要件 → システム要件 → 詳細設計 → 開発 → コードレビュー → デプロイの一連フローを AI と回すための構成・設定・スクリプトを提供する。
+- AIとのワークフローを管理する基盤リポジトリ
 
 ## コンセプト
 
@@ -44,27 +42,33 @@ ai-workspace (基盤リポジトリ)
 ai-workspace/
 ├── README.md
 ├── config/
-│   ├── settings.yaml         # 通知設定など（git 管理外）
-│   ├── settings.yaml.template
-│   └── projects.yaml         # 開発対象リポジトリ一覧（project_ids で参照）
-├── issues/                   # git 管理外（.gitignore）
+│   ├── settings.yaml           # 通知設定など（git 管理外）
+│   ├── settings.yaml.example   # settings.yaml のテンプレート
+│   └── projects.yaml           # 開発対象リポジトリ一覧（project_ids で参照）
+├── issues/                     # git 管理外（.gitignore）
 │   └── issue_001/
 │       ├── request.yaml
 │       ├── phase.yaml
 │       ├── business-requirements.md
 │       ├── system-requirements.md
-│       └── detailed-design.md
+│       ├── detailed-design.md
+│       └── tasks/
+│           └── development.yaml  # 開発タスク記憶（フェーズ 5）
 ├── scripts/
-│   └── ntfy.sh               # ntfy 通知送信
-├── .claude/
-│   └── CLAUDE.md             # AI 向けフロールール
-└── .rulesync/                # rulesync で .cursor / .claude 等に展開
-    └── skills/
-        └── dev_workflow/     # 開発ワークフロー
-            ├── SKILL.md
-            ├── references/
-            │   └── flow.md   # フェーズ・承認・差し戻しの定義
-            └── assets/       # 成果物ひな形
+│   └── ntfy.sh                 # ntfy 通知送信
+├── rulesync.jsonc              # rulesync 設定ファイル
+├── .rulesync/                  # rulesync の編集正本
+│   └── skills/
+│       └── dev_workflow/       # 開発ワークフロー
+│           ├── SKILL.md
+│           ├── references/     # フェーズ定義・スキーマ・ヒアリングガイド
+│           └── assets/         # 成果物ひな形
+├── .cursor/                    # rulesync で展開（Cursor 用）
+│   └── skills/dev_workflow/
+├── .claude/                    # rulesync で展開（Claude Code 用）
+│   └── skills/dev_workflow/
+└── .codex/                     # rulesync で展開（Codex 用）
+    └── skills/dev_workflow/
 ```
 
 ## 開発フロー
@@ -108,8 +112,8 @@ sequenceDiagram
   AI->>User: ntfy で MR レビュー依頼通知
   User->>Repo: レビュー承認・マージ
 
-  Note over User,GA: フェーズ 7 deploy
-  GA->>GA: 自動デプロイ
+  Note over User,GA: フェーズ 7 close
+  AI->>Local: 全フェーズ completed
   Note over User,GA: Issue クローズ
 ```
 
@@ -118,18 +122,20 @@ sequenceDiagram
 | フェーズ | 名前 | 説明 |
 | --- | --- | --- |
 | 1 | request | 要望を `request.yaml` に記録 → ntfy 通知 → 承認で次へ |
-| 2 | business_requirements | ビジネス要件を作成 → ntfy 通知 → 承認で次へ |
-| 3 | system_requirements | システム要件を作成 → ntfy 通知 → 承認で次へ |
+| 2 | business_requirements | ヒアリング → ビジネス要件を作成 → ntfy 通知 → 承認で次へ |
+| 3 | system_requirements | ヒアリング → システム要件を作成 → ntfy 通知 → 承認で次へ |
 | 4 | detailed_design | 詳細設計を作成 → ntfy 通知 → 承認で次へ |
-| 5 | development | 設計に基づき実装。ローカルコミット（PR は作らない） |
-| 6 | code_review | **ここだけ PR を作成** → ntfy で PR URL を通知 → マージで完了 |
-| 7 | deploy | GitHub Action でデプロイ → Issue クローズ |
+| 5 | development | 設計に基づき実装。タスク記憶を更新しながら進行。ローカルコミット |
+| 6 | code_review | `review_method` に応じて PR または手元 diff でレビュー → 承認で次へ |
+| 7 | close | 全フェーズ完了 → Issue クローズ（デプロイは各プロダクトの CI/CD に委任） |
 
 ### なぜフェーズを分けるのか
 
 - **PR はコードレビュー時のみ**: 要件・設計はローカルファイルで管理し、ノイズを減らす
 - **成果物出力 → ntfy → 承認のサイクル**: スマホから SSH して「承認」と言うだけで次へ進める
 - **仕様を固めてから実装**: 1 Issue = 1 開発サイクルとして履歴を残す
+- **ヒアリングで認識を合わせる**: フェーズ 2,3 でユーザーの意図を確認してから成果物を作成
+- **タスク記憶でコンテキスト維持**: フェーズ 5 では `tasks/development.yaml` に進捗を記録し、セッション切れ後も復帰可能
 
 ## セットアップ
 
@@ -166,19 +172,26 @@ ntfy:
 projects:
   - id: ai-workspace
     name: "ai-workspace"
-    path: "/Users/user/environment/ai-workspace"
+    path: "~/environment/ai-workspace"
     repo: "github.com/kuroweb/ai-workspace"
     default_branch: master
+    review_method: local_diff   # pr または local_diff
     notes: |
       - ai-workspace 開発用プロジェクト
   - id: my-app
     name: "マイアプリ"
-    path: "/Users/user/projects/my-app"
+    path: "/path/to/my-app"
     repo: "github.com/user/my-app"
     default_branch: main
+    review_method: pr           # pr または local_diff
     notes: |
       - アプリ本体リポジトリ
 ```
+
+| 項目 | 説明 |
+| --- | --- |
+| `review_method: pr` | AI が PR を作成し、GitHub 上でレビュー |
+| `review_method: local_diff` | AI は push せず、手元で `git diff` を確認してレビュー |
 
 ### 4. ntfy の設定
 
@@ -277,19 +290,25 @@ phases:
 
 - 基本は **ntfy**（`scripts/ntfy.sh`）
 - フェーズ 1〜4: 成果物のローカルパスを案内（フェーズ 1 は request.yaml のレビュー依頼）
-- フェーズ 6: PR URL を通知に含める
+- フェーズ 6: `review_method` に応じて PR URL または手元 diff の確認依頼
 
 ```bash
+# フェーズ 1（request）
+bash scripts/ntfy.sh "📋 要望を整理しました（request）。レビューをお願いします"
+
 # フェーズ 2〜4
 bash scripts/ntfy.sh "📋 ビジネス要件を書きました。レビューをお願いします"
 
-# フェーズ 6
+# フェーズ 6（review_method: pr）
 bash scripts/ntfy.sh "📋 MR レビュー依頼: https://github.com/user/repo/pull/123"
+
+# フェーズ 6（review_method: local_diff）
+bash scripts/ntfy.sh "📋 実装しました。手元で diff を確認してレビューをお願いします"
 ```
 
 ## dotfiles との連携
 
-- **rulesync**: ai-workspace でも rulesync を使い、複数 Agent（Cursor, Claude Code など）で設定を共有
+- **rulesync**: ai-workspace でも rulesync を使い、複数 Agent（Cursor, Claude Code, Codex など）で設定を共有
+- **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で `.cursor/`, `.claude/`, `.codex/` に展開される
 - **定期的な移植**: ai-workspace で育てた skills / rules のうち汎用的なものは dotfiles へ移行
 - **context-load**: skills に「指定した issue_xxx を読み込んでコンテキストを復元する」処理を実装
-
