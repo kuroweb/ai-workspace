@@ -1,5 +1,6 @@
 # 設定ファイル
 config/settings.yaml
+config/projects.yaml
 
 # rulesyncによる生成ファイル
 .claude/skills
