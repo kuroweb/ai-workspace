@@ -1,4 +1,4 @@
-# Issue のフェーズ管理。スキーマは references/phase-schema.md を参照。
+# Issue のフェーズ管理。スキーマは references/phase-schema.md を参照
 
 current_phase: 1
 waiting_approval: false
