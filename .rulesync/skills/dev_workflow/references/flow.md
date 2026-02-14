@@ -2,6 +2,13 @@
 
 AI とユーザー間の契約として、フェーズ遷移・承認ルール・差し戻しルールを定義する。
 
+## 最重要ルール: 承認ゲート
+
+**「承認を待つ」= 会話ターンを終了してユーザーの次の発言を待つこと。勝手に次フェーズの作業を始めない。**
+
+フェーズ 1〜4, 6 は成果物作成後に ntfy 通知 → 承認を待つ（会話終了）。
+フェーズ 5 は承認不要で自動遷移。フェーズ 7 はデプロイ完了で終了。
+
 ## フロー全体像
 
 ```mermaid
@@ -15,6 +22,9 @@ sequenceDiagram
   Note over User,GA: フェーズ 1 request
   User->>AI: 要望を記述
   AI->>Local: request.yaml に要望を記録
+  AI->>User: ntfy でレビュー依頼通知
+  User->>AI: チャットで「承認」
+  AI->>Local: phase.yaml 更新
 
   Note over User,GA: フェーズ 2 business_requirements
   AI->>Local: business-requirements.md に出力
@@ -49,7 +59,7 @@ sequenceDiagram
 
 | フェーズ | 名前 | 成果物 | 承認方法 |
 | --- | --- | --- | --- |
-| 1 | request | `request.yaml` | 自動（要望記録で完了） |
+| 1 | request | `request.yaml` | ユーザー承認 |
 | 2 | business_requirements | `business-requirements.md` | ユーザー承認 |
 | 3 | system_requirements | `system-requirements.md` | ユーザー承認 |
 | 4 | detailed_design | `detailed-design.md` | ユーザー承認 |
@@ -102,16 +112,20 @@ sequenceDiagram
 2. `issues/issue_XXX/` ディレクトリを作成
 3. 本スキルの `assets/` から `request.yaml`, `phase.yaml` をコピー
 4. 要望を `request.yaml` に記録
+5. `phase.yaml` を `current_phase: 1`, `waiting_approval: true`, フェーズ 1 の `status: in_progress` で更新
+6. ntfy でレビュー依頼を通知し、**ユーザーの承認を待つ**（承認後にフェーズ 2 へ進む）
 
 ### Issue の状態確認
 
 起動時に AI は以下を実行:
 
 1. `issues/` をスキャンして全 Issue を列挙
-2. 各 `phase.yaml` から状態を取得
-   - `current_phase`: 現在のフェーズ
-   - `waiting_approval`: 承認待ちかどうか
-3. 承認待ちの Issue があれば優先的に対応
+2. 各 `phase.yaml` から `current_phase` と `waiting_approval` を取得
+3. **対象 Issue を決定**（優先順）:
+   - ユーザーが `issue_XXX` を指定 → その Issue
+   - ユーザーが新規要望を述べている → 「新規 Issue 作成」を実行
+   - 承認待ちが 1 件 → その Issue
+   - 承認待ちが複数 → 一覧でユーザーに選んでもらう
 
 ### Issue のステータス
 
@@ -130,6 +144,7 @@ sequenceDiagram
 
 | フェーズ | タイミング | メッセージ例 |
 | --- | --- | --- |
+| 1 | 要望記録（request）作成後 | `📋 要望を整理しました（request）。レビューをお願いします` |
 | 2 | ビジネス要件作成後 | `📋 ビジネス要件を書きました。レビューをお願いします` |
 | 3 | システム要件作成後 | `📋 システム要件を書きました。レビューをお願いします` |
 | 4 | 詳細設計作成後 | `📋 詳細設計を書きました。レビューをお願いします` |

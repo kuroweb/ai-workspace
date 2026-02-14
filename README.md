@@ -80,6 +80,9 @@ sequenceDiagram
   Note over User,GA: フェーズ 1 request
   User->>AI: 要望を記述
   AI->>Local: request.yaml に要望を記録
+  AI->>User: ntfy でレビュー依頼通知
+  User->>AI: チャットで「承認」
+  AI->>Local: phase.yaml 更新
 
   Note over User,GA: フェーズ 2 business_requirements
   AI->>Local: business-requirements.md に出力
@@ -114,7 +117,7 @@ sequenceDiagram
 
 | フェーズ | 名前 | 説明 |
 | --- | --- | --- |
-| 1 | request | ユーザーが要望を記述。AI は `request.yaml` に記録 |
+| 1 | request | 要望を `request.yaml` に記録 → ntfy 通知 → 承認で次へ |
 | 2 | business_requirements | ビジネス要件を作成 → ntfy 通知 → 承認で次へ |
 | 3 | system_requirements | システム要件を作成 → ntfy 通知 → 承認で次へ |
 | 4 | detailed_design | 詳細設計を作成 → ntfy 通知 → 承認で次へ |
@@ -190,8 +193,8 @@ AI との会話で要望を伝えると、AI が `issues/issue_xxx/` を作成�
 
 ```
 ユーザー: タスク管理アプリを作りたい。スマホから使えてシンプルなもの。
-AI: issues/issue_001/ を作成し、request.yaml に要望を記録しました。
-    ビジネス要件を作成しています...
+AI: issues/issue_001/ を作成し、request.yaml に要望を記録しました。レビューをお願いします。（ntfy で通知）
+    [ユーザーが「承認」後] ビジネス要件を作成しています...
 ```
 
 ### 承認・差し戻し
@@ -268,7 +271,7 @@ phases:
 ## 通知方式
 
 - 基本は **ntfy**（`scripts/ntfy.sh`）
-- フェーズ 2〜4: 成果物のローカルパスを案内
+- フェーズ 1〜4: 成果物のローカルパスを案内（フェーズ 1 は request.yaml のレビュー依頼）
 - フェーズ 6: PR URL を通知に含める
 
 ```bash
