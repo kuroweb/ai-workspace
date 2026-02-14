@@ -82,9 +82,11 @@ description: |
 ### フェーズ 5: development（承認不要・自動遷移）
 
 1. `phase.yaml`: `current_phase: 5`, `status: in_progress`
-2. `request.yaml` の `project_ids` の全リポジトリで実装
-3. ローカルコミット（PR はまだ作らない）
-4. 完了したら `status: completed` にしてフェーズ 6 へ（承認不要）
+2. **タスク記憶の参照**: 対象 Issue の `issues/issue_NNN/tasks/development.yaml` があれば読み、現在のタスク一覧を把握する。形式は `./references/tasks-development.md` を参照。
+3. `request.yaml` の `project_ids` の全リポジトリで実装
+4. **タスク記憶の更新**: タスクを進めたら、`issues/issue_NNN/tasks/development.yaml` に「追加」または既存エントリの `status` / `summary` / `updated_at` を更新する。ディレクトリ `tasks/` が無ければ作成する。
+5. ローカルコミット（PR はまだ作らない）。タスク記憶ファイルもコミット対象に含める（推奨）。
+6. 完了したら `status: completed` にしてフェーズ 6 へ（承認不要）
 
 ### フェーズ 6: code_review
 
