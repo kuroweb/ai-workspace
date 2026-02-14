@@ -143,15 +143,20 @@ cd ai-workspace
 ### 2. 設定ファイルを作成
 
 ```bash
-cp config/settings.yaml.template config/settings.yaml
+cp config/settings.yaml.example config/settings.yaml
 ```
 
 `config/settings.yaml` を編集して ntfy トピックを設定:
 
 ```yaml
-ntfy_topic: "your-secret-topic"
-ntfy_base_url: "https://ntfy.sh"  # 省略可（デフォルト: ntfy.sh）
+ntfy:
+  server: "https://ntfy.sh"
+  topic: "your-secret-topic"
+  # token: "..."   # 認証が必要な場合のみ
 ```
+
+- `config/settings.yaml` は git にコミットしないでください。
+- 従来の `config/settings.yaml.template`（`ntfy_topic` / `ntfy_base_url`）は別形式のため、本スクリプトでは `settings.yaml.example` の形式を使用します。
 
 ### 3. 開発対象プロジェクトを設定
 
@@ -178,7 +183,7 @@ projects:
 ### 4. ntfy の設定
 
 1. スマホに [ntfy](https://ntfy.sh) アプリをインストール
-2. `config/settings.yaml` の `ntfy_topic` と同じトピックを購読
+2. `config/settings.yaml` の `ntfy.topic` と同じトピックを購読
 3. 動作確認:
 
 ```bash
