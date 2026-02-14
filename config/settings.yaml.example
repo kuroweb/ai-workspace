@@ -1,8 +1,3 @@
-# ntfy 通知設定のひな形
-# コピーして config/settings.yaml として使用し、トピック名等を編集してください。
-# config/settings.yaml は git にコミットしないでください。
-
 ntfy:
   server: "https://ntfy.sh"
   topic: "my-topic"
-  # token: "optional-bearer-token"   # 認証が必要な場合のみ

@@ -21,11 +21,10 @@ if [[ ! -f "$CONFIG" ]]; then
   exit 1
 fi
 
-# 設定読み取り（yq があれば使用、なければ grep/sed で簡易パース）
 get_ntfy_val() {
   local key="$1"
   if command -v yq &>/dev/null; then
-    yq -r ".ntfy.${key} // empty" "$CONFIG" 2>/dev/null || true
+    yq -r ".ntfy.${key} // \"\"" "$CONFIG" 2>/dev/null | sed -E 's/^[[:space:]]+|[[:space:]]+$//g' || true
   else
     sed -n "/^ntfy:/,/^[^ ]/p" "$CONFIG" 2>/dev/null | grep -E "^\s*${key}:" | head -1 | sed -E 's/.*:\s*"?([^"]*)"?.*/\1/' | sed -E "s/^[[:space:]]+|[[:space:]]+$//g" || true
   fi
