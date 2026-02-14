@@ -53,7 +53,7 @@ description: |
 
 ### フェーズ 2: business_requirements
 
-1. **ヒアリング**: フェーズ 2 開始時、`request.yaml`（要望）を踏まえ、ユーザーに**適度にヒアリング**する。目的・ゴールの具体化、ステークホルダー、制約・前提、受け入れイメージ等を質問し、回答を得る。詳細は `./references/hearing-guide.md` を参照。
+1. **ヒアリング**: フェーズ 2 開始時、`request.yaml`（要望）を踏まえ、ユーザーに**適度にヒアリング**する。目的・ゴールの具体化、ステークホルダー、制約・前提、受け入れイメージ等を質問し、回答を得る。詳細は `./references/hearing-guide-phase2.md` を参照。
 2. **コピー**: このスキルと同じディレクトリの `./assets/business-requirements.md` を `issues/issue_NNN/business-requirements.md` にコピーする。（編集正本は .rulesync のため、.rulesync/skills/dev_workflow/assets/ を編集すると rulesync generate で .cursor / .codex 等に反映される。）
 3. **記載**: `request.yaml` の raw_input / title および**ヒアリング結果**に沿って、概要・目的・ゴール・ステークホルダー・機能要件（ハイレベル）・非機能要件・制約・前提条件・受け入れ基準を埋める。
 4. **phase.yaml**: `current_phase: 2`, フェーズ 2 `status: in_progress`, `waiting_approval: true` に更新する。
@@ -62,7 +62,7 @@ description: |
 
 ### フェーズ 3: system_requirements
 
-1. **ヒアリング**: フェーズ 3 開始時、`request.yaml` と `business-requirements.md` を踏まえ、ユーザーに**適度にヒアリング**する。システム境界・機能制約・非機能・受け入れイメージ等で不足しそうな点を質問し、回答を得る。詳細は `./references/hearing-guide.md` の「フェーズ 3（システム要件）用」を参照。
+1. **ヒアリング**: フェーズ 3 開始時、`request.yaml` と `business-requirements.md` を踏まえ、ユーザーに**適度にヒアリング**する。システム境界・機能制約・非機能・受け入れイメージ等で不足しそうな点を質問し、回答を得る。詳細は `./references/hearing-guide-phase3.md` を参照。
 2. **コピー**: `./assets/system-requirements.md` を `issues/issue_NNN/system-requirements.md` にコピーする。
 3. **記載**: 要望・ビジネス要件および**ヒアリング結果**に沿って、各セクションを埋める。
 4. **phase.yaml**: `current_phase: 3`, フェーズ 3 `status: in_progress`, `waiting_approval: true` に更新する。
