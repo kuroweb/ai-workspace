@@ -1,0 +1,21 @@
+# 開発対象リポジトリの一覧
+# request.yaml の project_ids で id を参照する
+
+projects:
+  - id: ai-workspace
+    name: "ai-workspace"
+    path: "~/environment/ai-workspace"
+    repo: "github.com/kuroweb/ai-workspace"
+    default_branch: master
+    notes: |
+      - ai-workspace 開発用プロジェクト
+      - Issue 単位の開発フロー（要望→要件→設計→実装→PR）を管理
+
+  # 追加例:
+  # - id: my-app
+  #   name: "マイアプリ"
+  #   path: "/path/to/my-app"
+  #   repo: "github.com/user/my-app"
+  #   default_branch: main
+  #   notes: |
+  #     - アプリ本体リポジトリ

@@ -1,0 +1,8 @@
+# Issue の要望を記録するファイル
+id: issue_XXX
+# この Issue で扱うリポジトリ。config/projects.yaml の projects[].id。実装・PR は列挙したすべてで行う
+project_ids: []  # 例: ["my-app"] または ["api", "web", "shared-lib"]
+title: ""
+created_at: ""  # ISO 8601 形式（例: 2026-02-14T10:30:00+09:00）
+raw_input: |
+  # ここにユーザーの要望をそのまま記載

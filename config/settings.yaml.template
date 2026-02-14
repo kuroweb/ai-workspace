@@ -1,0 +1,8 @@
+# 通知設定など。コピーして config/settings.yaml として使用（git 管理外）
+
+# ntfy 設定
+ntfy_topic: "your-secret-topic"
+ntfy_base_url: "https://ntfy.sh"  # 省略可（デフォルト: ntfy.sh）
+
+# 自前 ntfy サーバの場合の例
+# ntfy_base_url: "https://your-ntfy-server.example.com"

@@ -1,0 +1,11 @@
+# 設定ファイル
+config/settings.yaml
+
+# rulesyncによる生成ファイル
+.claude/skills
+.cursor/skills
+.codex/skills
+
+# Issues
+issues/*
+!issues/.keep

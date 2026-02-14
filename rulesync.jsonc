@@ -1,0 +1,14 @@
+{
+  "targets": [
+    "cursor",
+    "claudecode",
+    "codexcli"
+  ],
+  "features": [
+    "skills"
+  ],
+  "baseDirs": [
+    "."
+  ],
+  "delete": true
+}
