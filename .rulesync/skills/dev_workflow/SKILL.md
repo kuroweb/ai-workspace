@@ -45,7 +45,7 @@ description: |
 
 1. **採番**: `issues/` をスキャンし最大番号+1、3桁ゼロパッド（無→`001`）
 2. **作成**: `issues/issue_NNN/` を作成
-3. **コピー**: `.rulesync/skills/dev_workflow/assets/` か `.cursor/skills/dev_workflow/assets/` から `request.yaml`, `phase.yaml` をコピー
+3. **コピー**: `./assets/` から `request.yaml`, `phase.yaml` をコピー
 4. **記録**: `request.yaml` の `id`, `raw_input`, `created_at` を設定
 5. **phase.yaml**: `current_phase: 1`, フェーズ 1 `status: in_progress`, `waiting_approval: true`
 6. **通知**: `bash scripts/ntfy.sh "📋 要望を整理しました（request）。レビューをお願いします"`
@@ -115,7 +115,7 @@ description: |
 
 ## 成果物ひな形（assets/）
 
-コピー元: `.rulesync/skills/dev_workflow/assets/` または `.cursor/skills/dev_workflow/assets/`
+コピー元: `./assets/`（このスキルと同じディレクトリ内）
 
 ## 関連ファイル
 
