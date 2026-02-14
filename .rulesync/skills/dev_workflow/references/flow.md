@@ -6,8 +6,9 @@ AI とユーザー間の契約として、フェーズ遷移・承認ルール�
 
 **「承認を待つ」= 会話ターンを終了してユーザーの次の発言を待つこと。勝手に次フェーズの作業を始めない。**
 
-フェーズ 1〜4, 6 は成果物作成後に ntfy 通知 → 承認を待つ（会話終了）。
-フェーズ 5 は承認不要で自動遷移。フェーズ 7 はデプロイ完了で終了。
+- フェーズ 1〜4, 6: 成果物作成後 → ntfy 通知 → 承認を待つ（会話終了）
+- フェーズ 5: 承認不要で自動遷移
+- フェーズ 7: フェーズ 6 完了後に Issue クローズ
 
 ## フロー全体像
 
@@ -50,13 +51,19 @@ sequenceDiagram
   AI->>Repo: 開発実施（ローカルコミット）
 
   Note over User,GA: フェーズ 6 code_review
-  AI->>Repo: PR 作成（ここだけ PR）
-  AI->>User: ntfy で MR レビュー依頼通知
-  User->>Repo: レビュー承認・マージ
+  alt review_method: pr
+    AI->>Repo: PR 作成
+    AI->>User: ntfy で MR レビュー依頼通知
+    User->>Repo: レビュー承認・マージ
+  else review_method: local_diff
+    AI->>User: 変更概要を伝え、手元で diff 確認を促す＋ntfy 通知
+    User->>User: 手元で git diff 等を確認
+    User->>AI: 「承認」
+  end
 
-  Note over User,GA: フェーズ 7 deploy
-  GA->>GA: 自動デプロイ
-  Note over User,GA: Issue クローズ
+  Note over User,GA: フェーズ 7 close
+  AI->>Local: phase.yaml 全フェーズ completed、Issue クローズ
+  Note over GA: デプロイは各リポジトリの CI/CD に委譲（本リポジトリ管理外）
 ```
 
 ## フェーズ定義
@@ -68,8 +75,8 @@ sequenceDiagram
 | 3 | system_requirements | `system-requirements.md`（ヒアリング実施のうえ作成） | ユーザー承認 |
 | 4 | detailed_design | `detailed-design.md` | ユーザー承認 |
 | 5 | development | ローカルコミット | 実装完了で自動遷移 |
-| 6 | code_review | PR | PR マージ |
-| 7 | deploy | - | デプロイ完了 |
+| 6 | code_review | PR（pr） or 手元 diff 確認（local_diff） | PR マージ または ユーザー承認 |
+| 7 | close | - | PR マージ後クローズ（デプロイは管理外） |
 
 ## 承認ルール
 
@@ -152,7 +159,7 @@ sequenceDiagram
 | 2 | ビジネス要件作成後 | `📋 ビジネス要件を書きました。レビューをお願いします` |
 | 3 | システム要件作成後 | `📋 システム要件を書きました。レビューをお願いします` |
 | 4 | 詳細設計作成後 | `📋 詳細設計を書きました。レビューをお願いします` |
-| 6 | PR 作成後 | `📋 MR レビュー依頼: [PR URL]` |
+| 6 | pr: PR 作成後。local_diff: 実装完了後 | pr: `📋 MR レビュー依頼: [PR URL]` / local_diff: `📋 実装しました。手元で diff を確認してレビューをお願いします` |
 
 ### 通知コマンド
 
@@ -175,5 +182,19 @@ issues/issue_XXX/
 
 - `request.yaml` の `project_ids` に列挙した id と一致する `config/projects.yaml` の要素の `path` が、この Issue で扱うリポジトリ全体。
 - フェーズ 5（development）: 列挙した**すべての**リポジトリで実装。
-- フェーズ 6（code_review）: 各リポジトリで PR を作成する（複数 PR になりうる）。
+- フェーズ 6（code_review）: レビュー方法はプロジェクトの `review_method`（必須）に従う（下記）。
 - デプロイ設定は開発対象リポジトリ側に配置
+
+### config/projects.yaml の項目
+
+| キー | 必須 | 説明 |
+| --- | --- | --- |
+| `id` | ○ | request.yaml の `project_ids` で参照する識別子。 |
+| `name` | ○ | プロジェクト名（表示・メモ用）。 |
+| `path` | ○ | リポジトリのローカルパス。この Issue で扱う実体。 |
+| `repo` | ○ | リモートリポジトリ（例: `github.com/user/repo`）。 |
+| `default_branch` | ○ | デフォルトブランチ（例: `main`, `master`）。 |
+| `review_method` | ○ | フェーズ 6 のレビュー方法。`pr` または `local_diff`。 |
+| → `pr` | | AI が push して PR を作成。マージ後にクローズ。 |
+| → `local_diff` | | PR は作らない。ユーザーが手元で diff を確認して承認。AI の git 操作が禁止されている場合に指定。 |
+| `notes` | - | 自由記述のメモ。 |

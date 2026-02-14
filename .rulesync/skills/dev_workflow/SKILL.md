@@ -1,7 +1,7 @@
 ---
 name: dev_workflow
 description: |
-  Issue 単位の開発フロー（要望→ビジネス要件→システム要件→詳細設計→実装→コードレビュー→デプロイ）を管理する。
+  Issue 単位の開発フロー（要望→ビジネス要件→システム要件→詳細設計→実装→コードレビュー→クローズ）を管理する。デプロイは各プロダクトの CI/CD に委ねる。
   使用タイミング: (1) 新規要望・目的を述べたときは**まず issue_xxx と request.yaml / phase.yaml を生成し、ユーザー承認を得てから**次フェーズへ進む、(2) 承認待ちの Issue を進めるとき、(3) 「承認」「差し戻し」と発言したとき、(4) issues/ の状態確認やフェーズに応じた成果物作成・PR 作成を行うとき。
 ---
 
@@ -24,7 +24,6 @@ description: |
 
 - Issue 単位で `issues/issue_NNN/` に成果物を蓄積する
 - 各フェーズで成果物を出力 → ntfy で通知 → **承認を待つ（会話終了）** → 承認後に次フェーズへ
-- PR はフェーズ 6（code_review）のみ作成する
 
 ## 起動時にやること
 
@@ -85,15 +84,22 @@ description: |
 
 ### フェーズ 6: code_review
 
-1. 各リポジトリで PR を作成
-2. `phase.yaml` の `pr_urls` に PR URL を記録
-3. **通知**: 各 PR URL を `bash scripts/ntfy.sh "📋 MR レビュー依頼: [PR URL]"` で通知
-4. **⛔ PR マージを待つ — ここで会話を終了。マージ後にユーザーが報告するまで待つ**
+プロジェクトによっては AI の git 操作が禁止されているため、レビュー方法を **PR** と **手元の diff** のどちらかで実施する。`config/projects.yaml` の各プロジェクトで `review_method` を必須で記述する。
 
-### フェーズ 7: deploy（自動）
+- **PR（review_method: pr）**
+  1. AI が各リポジトリで push し PR を作成
+  2. `phase.yaml` の `pr_urls` に PR URL を記録
+  3. **通知**: 各 PR URL を `bash scripts/ntfy.sh "📋 MR レビュー依頼: [PR URL]"` で通知
+  4. **⛔ PR マージを待つ — ここで会話を終了。マージ後にユーザーが報告するまで待つ**
+- **手元の diff（review_method: local_diff）**
+  1. AI は git push / PR 作成を行わない。変更内容の概要（対象ファイル・差分の要点）を伝え、ユーザーに手元で `git diff` 等の確認を促す
+  2. **通知**: `bash scripts/ntfy.sh "📋 実装しました。手元で diff を確認してレビューをお願いします"`
+  3. **⛔ 承認を待つ — ここで会話を終了。ユーザーが手元で確認し「承認」と発言するまで待つ**
+  4. 承認されたらフェーズ 6 を `completed` にしてフェーズ 7（クローズ）へ。`pr_urls` は使わない
 
-1. GitHub Action でデプロイ（開発対象リポジトリ側の設定）
-2. `phase.yaml` の全フェーズを `completed` にして Issue クローズ
+### フェーズ 7: close
+
+1. フェーズ 6 が完了したタイミングで、`phase.yaml` の全フェーズを `completed` にして Issue をクローズする。
 
 ## 承認時の動作
 
@@ -123,6 +129,6 @@ description: |
 
 ## 関連ファイル
 
-- `config/projects.yaml`: 開発対象プロジェクト一覧
+- `config/projects.yaml`: 開発対象プロジェクト一覧（各プロジェクトの項目・`review_method` の意味は `./references/flow.md` の「config/projects.yaml の項目」を参照）
 - `scripts/ntfy.sh`: 通知スクリプト
 - `./references/flow.md`: フェーズ定義・承認・差し戻しルール詳細

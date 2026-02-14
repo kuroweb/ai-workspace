@@ -32,5 +32,5 @@ phases:
     status: "pending"
     pr_urls: []  # project_ids の順で各リポジトリの PR URL
   7:
-    name: "deploy"
+    name: "close"
     status: "pending"
