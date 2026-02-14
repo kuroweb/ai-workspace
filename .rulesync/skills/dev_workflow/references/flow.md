@@ -35,7 +35,9 @@ sequenceDiagram
   AI->>Local: phase.yaml 更新
 
   Note over User,GA: フェーズ 3 system_requirements
-  AI->>Local: system-requirements.md に出力
+  AI->>User: ヒアリング（システム境界・制約・非機能等）
+  User->>AI: 回答
+  AI->>Local: system-requirements.md に出力（要望＋ビジネス要件＋ヒアリング結果を反映）
   AI->>User: ntfy でレビュー依頼通知
   User->>AI: 承認
 
@@ -63,7 +65,7 @@ sequenceDiagram
 | --- | --- | --- | --- |
 | 1 | request | `request.yaml` | ユーザー承認 |
 | 2 | business_requirements | `business-requirements.md`（ヒアリング実施のうえ作成） | ユーザー承認 |
-| 3 | system_requirements | `system-requirements.md` | ユーザー承認 |
+| 3 | system_requirements | `system-requirements.md`（ヒアリング実施のうえ作成） | ユーザー承認 |
 | 4 | detailed_design | `detailed-design.md` | ユーザー承認 |
 | 5 | development | ローカルコミット | 実装完了で自動遷移 |
 | 6 | code_review | PR | PR マージ |
