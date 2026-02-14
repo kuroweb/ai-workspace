@@ -31,7 +31,8 @@ description: |
 2. `issues/` をスキャンし、各 `phase.yaml` から進行中・承認待ちの Issue を把握する
 3. **対象 Issue を決定する**（優先順）:
    - ユーザーが `issue_XXX` を指定 → その Issue
-   - ユーザーが新規要望を述べている（「Xしたい」「Yが目的」等） → **即座にフェーズ 1 を実行する。その場で `issues/issue_NNN/` を作成し、`request.yaml` と `phase.yaml` を配置してから通知する**
+   - **該当 Issue が見つからない（新規要望と判断した）場合** → **必ずフェーズ 1 を実行する。説明だけして終えず、その場で採番・作成・記録・通知まで行う。**
+   - ユーザーが新規要望を述べている（「Xしたい」「Yが目的」等） → 上記と同様に即座にフェーズ 1 を実行。`issues/issue_NNN/` を作成し、`request.yaml` と `phase.yaml` を配置してから通知する
    - 承認待ちが 1 件 → その Issue
    - 承認待ちが複数 → 一覧を出してユーザーに選んでもらう
 4. 対象 Issue の `request.yaml` と `phase.yaml` を読み、現在フェーズに応じた作業を実施する
@@ -40,7 +41,7 @@ description: |
 
 ### フェーズ 1: request
 
-**新規要望と判断したら、説明だけせず必ず以下を実行して Issue を作成すること。**
+**⛔ 該当 Issue が見つからないときは必ず以下を実行すること。説明だけして「Issue を作成しましょうか？」などと聞いて終えてはならない。**
 
 1. **採番**: `issues/` をスキャンし最大番号+1、3桁ゼロパッド（無→`001`）
 2. **作成**: `issues/issue_NNN/` を作成
@@ -127,8 +128,13 @@ description: |
 
 コピー元: `./assets/`（このスキルと同じディレクトリ内）。編集の正本は .rulesync 側（.rulesync/skills/dev_workflow/assets/）であり、rulesync generate で .cursor / .codex 等に反映される。
 
+- **request.yaml** のスキーマ: `./references/request-schema.md` を参照。
+- **phase.yaml** のスキーマ: `./references/phase-schema.md` を参照。
+
 ## 関連ファイル
 
 - `config/projects.yaml`: 開発対象プロジェクト一覧（各プロジェクトの項目・`review_method` の意味は `./references/flow.md` の「config/projects.yaml の項目」を参照）
 - `scripts/ntfy.sh`: 通知スクリプト
 - `./references/flow.md`: フェーズ定義・承認・差し戻しルール詳細
+- `./references/request-schema.md`: request.yaml のスキーマ
+- `./references/phase-schema.md`: phase.yaml のスキーマ

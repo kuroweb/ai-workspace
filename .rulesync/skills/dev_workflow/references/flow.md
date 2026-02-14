@@ -90,10 +90,7 @@ sequenceDiagram
 
 ### 承認時の AI の動作
 
-1. `phase.yaml` を更新
-   - `waiting_approval: false`
-   - 該当フェーズの `status: completed`
-   - `current_phase` をインクリメント
+1. `phase.yaml` を更新（フィールド定義・更新ルールは `phase-schema.md` 参照）
 2. 次フェーズの作業を開始
 
 ## 差し戻しルール
@@ -107,10 +104,7 @@ sequenceDiagram
 
 ### 差し戻し時の AI の動作
 
-1. `phase.yaml` を更新
-   - `waiting_approval: false`
-   - 該当フェーズの `status: rejected`
-   - 該当フェーズの `rejection_reason` に理由を記録
+1. `phase.yaml` を更新（フィールド定義・更新ルールは `phase-schema.md` 参照）
 2. 指摘内容に基づいて成果物を修正
 3. 修正後、再度 ntfy で通知
 4. `waiting_approval: true` に戻す
@@ -140,14 +134,7 @@ sequenceDiagram
 
 ### Issue のステータス
 
-`phase.yaml` の各フェーズの `status`:
-
-| ステータス | 説明 |
-| --- | --- |
-| `pending` | 未着手 |
-| `in_progress` | 作業中 |
-| `completed` | 完了 |
-| `rejected` | 差し戻し |
+`phase.yaml` の構造・各フェーズの `status` の取り得る値は `phase-schema.md` を参照。
 
 ## 通知ルール
 

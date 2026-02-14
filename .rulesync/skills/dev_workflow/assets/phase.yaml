@@ -1,5 +1,4 @@
-# Issue のフェーズ管理ファイル
-# 各フェーズで AI が current_phase / status / waiting_approval を更新する。
+# Issue のフェーズ管理。スキーマは references/phase-schema.md を参照。
 
 current_phase: 1
 waiting_approval: false
@@ -7,7 +6,7 @@ waiting_approval: false
 phases:
   1:
     name: "request"
-    status: "pending"  # pending / in_progress / completed / rejected
+    status: "pending"
     rejection_reason: null
   2:
     name: "business_requirements"
@@ -30,7 +29,7 @@ phases:
   6:
     name: "code_review"
     status: "pending"
-    pr_urls: []  # project_ids の順で各リポジトリの PR URL
+    pr_urls: []
   7:
     name: "close"
     status: "pending"
