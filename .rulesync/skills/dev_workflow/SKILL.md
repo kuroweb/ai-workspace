@@ -94,12 +94,14 @@ description: |
 ## 承認時の動作
 
 ユーザーが「承認」「OK」「LGTM」と発言したら:
+
 1. `phase.yaml`: `waiting_approval: false`, 該当フェーズ `status: completed`, `current_phase` +1
 2. 次フェーズの作業を開始
 
 ## 差し戻し時の動作
 
 ユーザーが「差し戻し: [理由]」と発言したら:
+
 1. `phase.yaml`: `waiting_approval: false`, `status: rejected`, `rejection_reason` に理由を記録
 2. 成果物を修正
 3. 再通知し、`waiting_approval: true` に戻す
