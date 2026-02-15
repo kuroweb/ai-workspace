@@ -57,17 +57,22 @@ ai-workspace/
 ├── scripts/
 │   └── ntfy.sh                 # ntfy 通知送信
 ├── rulesync.jsonc              # rulesync 設定ファイル
-├── .rulesync/                  # rulesync の編集正本
+├── .rulesync/                  # rulesync の編集正本（ここを編集して rulesync generate）
+│   ├── rules/                  # プロジェクトルール（CLAUDE.md / AGENTS.md の元）
+│   │   └── overview.md
 │   └── skills/
 │       └── dev-workflow/       # 開発ワークフロー
 │           ├── SKILL.md
 │           ├── references/     # フェーズ定義・スキーマ・ヒアリングガイド
 │           └── assets/         # 成果物ひな形
-├── .cursor/                    # rulesync で展開（Cursor 用）
+├── AGENTS.md                   # rulesync 生成（git 管理外）
+├── CLAUDE.md                   # rulesync 生成（git 管理外）
+├── .cursor/                    # rulesync で展開（Cursor 用・git 管理外）
+│   ├── rules/
 │   └── skills/dev-workflow/
-├── .claude/                    # rulesync で展開（Claude Code 用）
+├── .claude/                    # rulesync で展開（Claude Code 用・git 管理外）
 │   └── skills/dev-workflow/
-└── .codex/                     # rulesync で展開（Codex 用）
+└── .codex/                     # rulesync で展開（Codex 用・git 管理外）
     └── skills/dev-workflow/
 ```
 
@@ -203,6 +208,16 @@ projects:
 bash scripts/ntfy.sh "テスト通知"
 ```
 
+### 5. rulesync でエージェント用設定を生成（任意）
+
+Cursor / Claude Code / Codex でこのリポジトリを開く場合、以下でルールとスキルを展開する。
+
+```bash
+rulesync generate
+```
+
+生成される `AGENTS.md`, `CLAUDE.md`, `.cursor/`, `.claude/`, `.codex/` は `.gitignore` 済み。編集する場合は `.rulesync/rules/` と `.rulesync/skills/` を変更してから再度 `rulesync generate` を実行する。
+
 ## 使い方
 
 ### 新規 Issue を開始
@@ -309,6 +324,9 @@ bash scripts/ntfy.sh "📋 実装しました。手元で diff を確認して�
 ## dotfiles との連携
 
 - **rulesync**: ai-workspace でも rulesync を使い、複数 Agent（Cursor, Claude Code, Codex など）で設定を共有
-- **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で `.cursor/`, `.claude/`, `.codex/` に展開される
+- **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で以下を生成する（いずれも `.gitignore` 対象）
+  - **rules**: `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/` など（正本は `.rulesync/rules/`）
+  - **skills**: `.cursor/skills/`, `.claude/skills/`, `.codex/skills/`（正本は `.rulesync/skills/`）
+- **初回・クローン後**: `rulesync generate` を実行すると各エージェント用の設定が生成される
 - **定期的な移植**: ai-workspace で育てた skills / rules のうち汎用的なものは dotfiles へ移行
 - **context-load**: skills に「指定した issue_xxx を読み込んでコンテキストを復元する」処理を実装
