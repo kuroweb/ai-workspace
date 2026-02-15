@@ -59,16 +59,16 @@ ai-workspace/
 ├── rulesync.jsonc              # rulesync 設定ファイル
 ├── .rulesync/                  # rulesync の編集正本
 │   └── skills/
-│       └── dev_workflow/       # 開発ワークフロー
+│       └── dev-workflow/       # 開発ワークフロー
 │           ├── SKILL.md
 │           ├── references/     # フェーズ定義・スキーマ・ヒアリングガイド
 │           └── assets/         # 成果物ひな形
 ├── .cursor/                    # rulesync で展開（Cursor 用）
-│   └── skills/dev_workflow/
+│   └── skills/dev-workflow/
 ├── .claude/                    # rulesync で展開（Claude Code 用）
-│   └── skills/dev_workflow/
+│   └── skills/dev-workflow/
 └── .codex/                     # rulesync で展開（Codex 用）
-    └── skills/dev_workflow/
+    └── skills/dev-workflow/
 ```
 
 ## 開発フロー
