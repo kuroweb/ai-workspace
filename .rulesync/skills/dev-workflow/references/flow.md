@@ -113,8 +113,8 @@ sequenceDiagram
 
 ### 新規 Issue 作成
 
-1. `issues/` 配下の既存ディレクトリをスキャンして次の番号を決定
-2. `issues/issue_XXX/` ディレクトリを作成
+1. `issues/` 配下の既存ディレクトリをスキャンして次の番号を決定（ディレクトリ名は `issue_NNN_*`）
+2. 要望からスラッグを生成し、`issues/issue_NNN_slug/` を作成（id は常に `issue_NNN_slug`）
 3. 本スキルの `./assets/` から `request.yaml`, `phase.yaml` をコピー（編集正本は .rulesync 側の assets）
 4. 要望を `request.yaml` に記録
 5. `phase.yaml` を `current_phase: 1`, `waiting_approval: true`, フェーズ 1 の `status: in_progress` で更新
@@ -127,7 +127,7 @@ sequenceDiagram
 1. `issues/` をスキャンして全 Issue を列挙
 2. 各 `phase.yaml` から `current_phase` と `waiting_approval` を取得
 3. **対象 Issue を決定**（優先順）:
-   - ユーザーが `issue_XXX` を指定 → その Issue
+   - ユーザーが `issue_XXX`（例: `issue_001_add_notification`）を指定 → その Issue
    - ユーザーが新規要望を述べている → 「新規 Issue 作成」を実行
    - 承認待ちが 1 件 → その Issue
    - 承認待ちが複数 → 一覧でユーザーに選んでもらう
@@ -157,7 +157,7 @@ bash scripts/ntfy.sh "📋 メッセージ"
 ## ファイル配置
 
 ```
-issues/issue_XXX/
+issues/<issue_id>/   # issue_id は issue_NNN_slug（例: issue_001_add_notification）
 ├── request.yaml              # 要望
 ├── phase.yaml                # フェーズ管理
 ├── business-requirements.md  # ビジネス要件（フェーズ 2）

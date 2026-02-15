@@ -4,8 +4,7 @@
 
 ## 配置
 
-- **パス**: `issues/issue_NNN/tasks/development.yaml`
-- **NNN**: Issue 番号（3 桁ゼロパッド）
+- **パス**: `issues/<issue_id>/tasks/development.yaml`（`issue_id` は当該 Issue の id。例: `issue_001_add_notification`）
 - ディレクトリ `tasks/` が無ければ作成する。
 
 ## development.yaml の形式

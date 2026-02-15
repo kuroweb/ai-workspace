@@ -2,7 +2,7 @@
 name: dev-workflow
 description: |
   Issue 単位の開発フロー（要望→ビジネス要件→システム要件→詳細設計→実装→コードレビュー→クローズ）を管理する。デプロイは各プロダクトの CI/CD に委ねる。
-  使用タイミング: (1) 新規要望・目的を述べたときは**まず issue_xxx と request.yaml / phase.yaml を生成し、ユーザー承認を得てから**次フェーズへ進む、(2) 承認待ちの Issue を進めるとき、(3) 「承認」「差し戻し」と発言したとき、(4) issues/ の状態確認やフェーズに応じた成果物作成・PR 作成を行うとき。
+  使用タイミング: (1) 新規要望・目的を述べたときは**まず issue_NNN_slug と request.yaml / phase.yaml を生成し、ユーザー承認を得てから**次フェーズへ進む、(2) 承認待ちの Issue を進めるとき、(3) 「承認」「差し戻し」と発言したとき、(4) issues/ の状態確認やフェーズに応じた成果物作成・PR 作成を行うとき。
 ---
 
 ## 最重要ルール: 承認ゲート
@@ -22,7 +22,7 @@ description: |
 
 ## 概要
 
-- Issue 単位で `issues/issue_NNN/` に成果物を蓄積する
+- Issue 単位で `issues/<issue_id>/`（例: `issue_001_add_notification`）に成果物を蓄積する
 - 各フェーズで成果物を出力 → ntfy で通知 → **承認を待つ（会話終了）** → 承認後に次フェーズへ
 
 ## 起動時にやること
@@ -46,18 +46,19 @@ description: |
 
 **⛔ 該当 Issue が見つからないときは必ず以下を実行すること。説明だけして「Issue を作成しましょうか？」などと聞いて終えてはならない。**
 
-1. **採番**: `issues/` をスキャンし最大番号+1、3桁ゼロパッド（無→`001`）
-2. **作成**: `issues/issue_NNN/` を作成
-3. **コピー**: `./assets/` から `request.yaml`, `phase.yaml` をコピー
-4. **記録**: `request.yaml` の `id`, `raw_input`, `created_at` を設定
-5. **phase.yaml**: `current_phase: 1`, フェーズ 1 `status: in_progress`, `waiting_approval: true`
-6. **通知**: `bash scripts/ntfy.sh "📋 要望を整理しました（request）。レビューをお願いします"`
-7. **⛔ 承認を待つ — ここで会話を終了。次の発言まで何もしない**
+1. **採番**: `issues/` をスキャンし、ディレクトリ名が `issue_NNN_*` の NNN 部分の最大+1、3桁ゼロパッド（無→`001`）
+2. **スラッグ**: 要望（raw_input）またはタイトルから短いスラッグを生成。英小文字・数字・ハイフンのみ、スペースはハイフンに。目安20文字以内。取得困難な場合は `untitled` 等の既定スラッグを使う
+3. **作成**: `issues/issue_NNN_slug/` を作成。`id` は `issue_NNN_slug`
+4. **コピー**: `./assets/` から `request.yaml`, `phase.yaml` をコピー
+5. **記録**: `request.yaml` の `id`, `title`, `raw_input`, `created_at` を設定
+6. **phase.yaml**: `current_phase: 1`, フェーズ 1 `status: in_progress`, `waiting_approval: true`
+7. **通知**: `bash scripts/ntfy.sh "📋 要望を整理しました（request）。レビューをお願いします"`
+8. **⛔ 承認を待つ — ここで会話を終了。次の発言まで何もしない**
 
 ### フェーズ 2: business_requirements
 
 1. **ヒアリング**: フェーズ 2 開始時、`request.yaml`（要望）を踏まえ、ユーザーに**適度にヒアリング**する。目的・ゴールの具体化、ステークホルダー、制約・前提、受け入れイメージ等を質問し、回答を得る。詳細は `./references/hearing-guide-phase2.md` を参照。
-2. **コピー**: このスキルと同じディレクトリの `./assets/business-requirements.md` を `issues/issue_NNN/business-requirements.md` にコピーする。（編集正本は .rulesync のため、.rulesync/skills/dev-workflow/assets/ を編集すると rulesync generate で .cursor / .codex 等に反映される。）
+2. **コピー**: このスキルと同じディレクトリの `./assets/business-requirements.md` を `issues/<issue_id>/business-requirements.md` にコピーする。（`<issue_id>` は当該 Issue の id。例: `issue_001_add_notification`）（編集正本は .rulesync のため、.rulesync/skills/dev-workflow/assets/ を編集すると rulesync generate で .cursor / .codex 等に反映される。）
 3. **記載**: `request.yaml` の raw_input / title および**ヒアリング結果**に沿って、概要・目的・ゴール・ステークホルダー・機能要件（ハイレベル）・非機能要件・制約・前提条件・受け入れ基準を埋める。
 4. **phase.yaml**: `current_phase: 2`, フェーズ 2 `status: in_progress`, `waiting_approval: true` に更新する。
 5. **通知**: `bash scripts/ntfy.sh "📋 ビジネス要件を書きました。レビューをお願いします"`
@@ -66,7 +67,7 @@ description: |
 ### フェーズ 3: system_requirements
 
 1. **ヒアリング**: フェーズ 3 開始時、`request.yaml` と `business-requirements.md` を踏まえ、ユーザーに**適度にヒアリング**する。システム境界・機能制約・非機能・受け入れイメージ等で不足しそうな点を質問し、回答を得る。詳細は `./references/hearing-guide-phase3.md` を参照。
-2. **コピー**: `./assets/system-requirements.md` を `issues/issue_NNN/system-requirements.md` にコピーする。
+2. **コピー**: `./assets/system-requirements.md` を `issues/<issue_id>/system-requirements.md` にコピーする。
 3. **記載**: 要望・ビジネス要件および**ヒアリング結果**に沿って、各セクションを埋める。
 4. **phase.yaml**: `current_phase: 3`, フェーズ 3 `status: in_progress`, `waiting_approval: true` に更新する。
 5. **通知**: `bash scripts/ntfy.sh "📋 システム要件を書きました。レビューをお願いします"`
@@ -82,9 +83,9 @@ description: |
 ### フェーズ 5: development
 
 1. `phase.yaml`: `current_phase: 5`, `status: in_progress`
-2. **タスク記憶の参照**: 対象 Issue の `issues/issue_NNN/tasks/development.yaml` があれば読み、現在のタスク一覧を把握する。形式は `./references/tasks-development.md` を参照。
+2. **タスク記憶の参照**: 対象 Issue の `issues/<issue_id>/tasks/development.yaml` があれば読み、現在のタスク一覧を把握する。形式は `./references/tasks-development.md` を参照。
 3. `request.yaml` の `project_ids` の全リポジトリで実装
-4. **タスク記憶の更新**: タスクを進めたら、`issues/issue_NNN/tasks/development.yaml` に「追加」または既存エントリの `status` / `summary` / `updated_at` を更新する。ディレクトリ `tasks/` が無ければ作成する。
+4. **タスク記憶の更新**: タスクを進めたら、`issues/<issue_id>/tasks/development.yaml` に「追加」または既存エントリの `status` / `summary` / `updated_at` を更新する。ディレクトリ `tasks/` が無ければ作成する。
 5. ローカルコミット（PR はまだ作らない）。タスク記憶ファイルもコミット対象に含める（推奨）。
 6. 完了したら `status: completed` にしてフェーズ 6 へ（承認不要）
 
@@ -125,9 +126,11 @@ description: |
 
 詳細は `./references/flow.md` 参照。
 
-## Issue 番号の採番
+## Issue ID と採番
 
-`issues/` の最大番号+1、3桁ゼロパッド。無ければ `issue_001`。
+- **採番**: `issues/` 配下のディレクトリ名から `issue_NNN_*` の NNN の最大+1、3桁ゼロパッド。無ければ `001`。
+- **ID 形式**: `issue_NNN_slug` のみ（スラッグは要望から生成した短い識別子。英小文字・数字・ハイフン。取得困難な場合は `untitled` 等）。
+- **ディレクトリ**: `issues/<id>/`（例: `issues/issue_001_add_notification/`）。
 
 ## 成果物ひな形（assets/）
 

@@ -4,7 +4,7 @@ Issue の要望を記録するファイル。フェーズ 1 で AI が作成・�
 
 | フィールド | 型 | 必須 | 説明 |
 | --- | --- | --- | --- |
-| `id` | string | ○ | Issue 識別子。`issue_NNN` 形式（NNN は 3 桁ゼロパッド）。採番は `issues/` の最大番号+1。 |
+| `id` | string | ○ | Issue 識別子。`issue_NNN_slug` 形式（NNN は 3 桁ゼロパッド、slug は要望から生成したスラッグ）。採番は `issues/` のディレクトリ名から最大番号+1。 |
 | `project_ids` | array of string | ○ | この Issue で扱うリポジトリ。`config/projects.yaml` の `projects[].id` と一致すること。実装・PR は列挙したすべてで行う。空配列可（後で確定する場合）。 |
 | `title` | string | ○ | Issue のタイトル。要望を一言で表す。 |
 | `created_at` | string | ○ | 作成日時。ISO 8601 形式（例: `2026-02-14T10:30:00+09:00`）。 |
