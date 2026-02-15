@@ -5,7 +5,7 @@
     "codexcli"
   ],
   "features": [
-    "skills"
+    "rules","skills"
   ],
   "baseDirs": [
     "."

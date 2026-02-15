@@ -3,6 +3,9 @@ config/settings.yaml
 config/projects.yaml
 
 # rulesyncによる生成ファイル
+AGENTS.md
+CLAUDE.md
+.claude/rules
 .claude/skills
 .cursor/skills
 .codex/skills
