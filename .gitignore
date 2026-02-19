@@ -1,15 +1,27 @@
-# 設定ファイル
+# workspace config files
 config/settings.yaml
 config/projects.yaml
 
-# rulesyncによる生成ファイル
+.rulesync/mcp.json
+
+# rulesync generated files
 AGENTS.md
 CLAUDE.md
-.claude/rules
-.claude/skills
-.cursor/skills
-.codex/skills
+.mcp.json
+.claude
+.claude
+.cursor
+.codex
 
-# Issues
+# issues
 issues/*
 !issues/.keep
+
+# environment variables
+.env
+
+# others
+.DS_Store
+
+# Workspace
+*.code-workspace
