@@ -11,7 +11,8 @@ projects:
     path: "~/path/to/project"
     repo: "github.com/username/repo"
     default_branch: main
-    review_method: local_diff  # または pr
+    git_command: enabled  # enabled または disabled（デフォルト: disabled）
+    review_method: local_diff  # または pr（git_command: disabled の場合は local_diff 必須）
     notes: |
       - プロジェクトの説明
       - 複数行での記述も可能
