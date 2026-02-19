@@ -1,7 +1,9 @@
 ---
-targets:
-  - '*'
-description: 'セッションから再利用可能なパターンをスキルとして抽出する'
+name: learn
+description: |
+  セッションから再利用可能なパターンをスキルとして抽出する。
+  使用タイミング: セッション中に非自明な問題を解決した任意の時点で /learn を実行。
+disable-model-invocation: true
 ---
 # /learn - 再利用可能なパターンを抽出
 
