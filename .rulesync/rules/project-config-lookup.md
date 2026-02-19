@@ -55,7 +55,9 @@ globs: ["**/*"]
 ## 禁止事項
 
 ❌ パスが言及されても projects.yaml を見ずに Glob/Grep でパス探索
+
 ❌ プロジェクト名が言及されても projects.yaml を見ずに手動確認
+
 ❌ projects.yaml と異なる情報をもとに作業を進める
 
 ## 実装例
