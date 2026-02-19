@@ -28,7 +28,7 @@ ai-workspace/
 │       └── tasks/
 ├── .rulesync/                  # AI エージェント設定の編集正本
 │   ├── rules/                  # ルール定義
-│   ├── skills/                 # スキル定義（dev-workflow, investigation-report, skill-creator）
+│   ├── skills/                 # スキル定義（dev-workflow, investigating-code, skill-creator）
 │   ├── subagents/              # サブエージェント定義（architect, code-reviewer, tdd-guide など）
 │   ├── commands/               # カスタムコマンド（investigate, learn, plan）
 │   └── mcp.json                # MCP サーバー設定（git 管理外）
@@ -119,7 +119,7 @@ sequenceDiagram
 | スキル | 説明 | 使用タイミング |
 | --- | --- | --- |
 | **dev-workflow** | Issue 単位の開発フロー管理 | 新規要望、Issue 進行、承認・差し戻し時 |
-| **investigation-report** | コード調査レポート作成 | 既存機能調査、バグ原因特定、パフォーマンス分析時 |
+| **investigating-code** | コード調査・レポート作成（Markdown） | 既存機能調査、バグ原因特定、パフォーマンス分析時 |
 | **skill-creator** | スキル作成支援 | 新しいスキルを作成する時 |
 
 ### 利用可能なサブエージェント
@@ -198,7 +198,7 @@ AI: - issue_001_task_app: フェーズ 3 (system_requirements) - 承認待ち
 
 ### その他のスキル
 
-他のスキル（investigation-report, skill-creator など）は、トリガーワードやコンテキストで自動起動します。詳細は [スキル詳細](.rulesync/skills/) を参照。
+他のスキル（investigating-code, skill-creator など）は、トリガーワードやコンテキストで自動起動します。詳細は [スキル詳細](.rulesync/skills/) を参照。
 
 ## リファレンス
 

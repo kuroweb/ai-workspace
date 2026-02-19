@@ -85,4 +85,4 @@ code-investigatorエージェントは以下を行います:
 
 ## 関連エージェント・スキル
 
-このコマンドは `agents/code-investigator.md` サブエージェントと `skills/investigation-report/` スキルを使用します。
+このコマンドは `agents/code-investigator.md` サブエージェントと `skills/investigating-code/` スキルを使用します。

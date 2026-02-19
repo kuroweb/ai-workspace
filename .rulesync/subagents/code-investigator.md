@@ -21,7 +21,7 @@ cursor:
 
 **調査を開始する前に、必ず以下のスキルを Read ツールで読み込むこと:**
 
-- `skills/investigation-report/SKILL.md`
+- `skills/investigating-code/SKILL.md`
 
 このSKILLには以下が含まれる:
 
@@ -135,4 +135,4 @@ SKILL読み込み後、調査タイプに応じた出力形式を決定:
 
 **覚えておいてください**: 優れた調査レポートは、読者が迅速に理解し、自信を持って意思決定できることを可能にします。データに基づき、構造化され、アクション指向のレポートを心がけてください。
 
-プロジェクトのルール・スキルに基づいてカスタマイズ。特に `skills/investigation-report/` を参照。
+プロジェクトのルール・スキルに基づいてカスタマイズ。特に `skills/investigating-code/` を参照。
