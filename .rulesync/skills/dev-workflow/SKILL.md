@@ -37,9 +37,9 @@ description: |
 ## 起動時のフロー
 
 1. `config/projects.yaml` と `issues/*/phase.yaml` をスキャンし、状況を把握
-2. **プロジェクト設定の検証**:
-   - `config/projects.yaml` の各プロジェクトで `git_command: disabled` かつ `review_method: pr` の組み合わせを検出
-   - 検出した場合はエラーメッセージを表示: 「プロジェクト [id] は git_command: disabled ですが、review_method: pr が設定されています。review_method を local_diff に変更してください」
+2. **設定の検証**:
+   - `request.yaml` の `project_ids` に指定されたプロジェクトが `config/projects.yaml` に存在することを確認
+   - `git_command: disabled` かつ `review_method: pr` の組み合わせを検出した場合、エラーメッセージを表示: 「Issue [id] は git_command: disabled なプロジェクトに関連していますが、review_method: pr が設定されています。review_method を local_diff に変更してください」
 3. **対象 Issue を決定**:
 
    | 状況 | 対象 |
@@ -116,7 +116,7 @@ description: |
 ### フェーズ 6: code_review
 
 1. `phase.yaml`: `current_phase: 6`, `status: in_progress`
-2. **レビュー方法により分岐**:
+2. **レビュー方法により分岐** (`request.yaml` の `review_method` から取得):
    - **`review_method: pr`**:
      - 各リポジトリで push し PR を作成
      - `phase.yaml` の `pr_urls` に記録

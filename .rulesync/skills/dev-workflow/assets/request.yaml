@@ -4,4 +4,5 @@ id: issue_XXX
 project_ids: []
 title: ""
 created_at: ""
+review_method: local_diff
 raw_input: |

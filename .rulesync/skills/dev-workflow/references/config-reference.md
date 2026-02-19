@@ -8,7 +8,7 @@
 - フェーズ 5（development）: 列挙した**すべての**リポジトリで実装。`git_command` により git コマンドの実行可否が決まる。
   - `git_command: enabled`（デフォルト）: AI がローカルコミットを実行
   - `git_command: disabled`: AI はファイル編集のみ行い、git 操作はユーザーが手元で実施
-- フェーズ 6（code_review）: レビュー方法はプロジェクトの `review_method`（必須）に従う（下記）。
+- フェーズ 6（code_review）: レビュー方法は `request.yaml` の `review_method` に従う（下記）。
   - `review_method: pr`: AI が PR を作成（`git_command: enabled` の場合のみ有効）
   - `review_method: local_diff`: ユーザーが手元で diff を確認して承認
 - デプロイ設定は開発対象リポジトリ側に配置
@@ -16,6 +16,8 @@
 ---
 
 ## git_command と review_method の関係
+
+`git_command` は `config/projects.yaml` で設定し、`review_method` は `request.yaml` で設定します。
 
 | `git_command` | `review_method` | 有効性 | 説明 |
 | --- | --- | --- | --- |
@@ -37,10 +39,7 @@
 | `default_branch` | ○ | デフォルトブランチ（例: `main`, `master`）。 |
 | `git_command` | - | AI の git コマンド実行を制御。`enabled` または `disabled`。デフォルト: `disabled`。詳細は [`../rules/git-command.md`](../../rules/git-command.md) を参照。 |
 | → `enabled` | | AI がすべての git コマンドを実行可能。 |
-| → `disabled` | | AI は該当プロジェクトで**いかなる git コマンドも実行しない**。ファイル編集のみ行い、git 操作はすべてユーザーに委ねる。`disabled` の場合は `review_method: local_diff` 必須。 |
-| `review_method` | ○ | フェーズ 6 のレビュー方法。`pr` または `local_diff`。 |
-| → `pr` | | AI が push して PR を作成。マージ後にクローズ。`git_command: enabled` の場合のみ有効。 |
-| → `local_diff` | | PR は作らない。ユーザーが手元で diff を確認して承認。`git_command: disabled` の場合は必須。 |
+| → `disabled` | | AI は該当プロジェクトで**いかなる git コマンドも実行しない**。ファイル編集のみ行い、git 操作はすべてユーザーに委ねる。 |
 | `notes` | - | 自由記述のメモ。 |
 
 ---
