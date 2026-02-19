@@ -14,88 +14,41 @@
 - Issue 単位でワークフローと成果物（要件・設計など）を集約
 - フェーズ管理（`phase.yaml`）によりコンテキストを永続化し、セッション切れからの復旧を容易に
 - 開発に限らず、調査・相談などのワークフローも同じ仕組みで扱える
+- AI エージェント設定（rules, skills, subagents, commands, MCP）を一元管理し、複数のエージェント（Cursor, Claude Code, Codex CLI）に展開
 
-## 責務と棲み分け
-
-```
-dotfiles (汎用 agent 設定)
-└── skills, rules, hooks
-    ├── どのリポジトリでも使う共通設定
-    └── 基盤リポジトリを介さず直接開発するとき用
-
-ai-workspace (基盤リポジトリ)
-└── 開発・調査・相談など Issue 単位のフロー
-    ├── ワークフロー専用 skills / rules
-    ├── issues/ (作業中の成果物)
-    └── config/ (対象リポジトリ指定)
-```
-
-| 場所 | 置くもの |
-| --- | --- |
-| dotfiles | どのリポジトリでも使う汎用 agent 設定（skills, rules, hooks） |
-| ai-workspace | Issue 単位のワークフロー、開発対象リポジトリごとの config、成果物（要件・設計など） |
-| 開発対象リポジトリ | コード本体。`config/projects.yaml` で path を指定（複数可） |
+**注**: 以前は dotfiles で管理していた AI 関連ファイルを ai-workspace に統合しました。
 
 ## リポジトリ構成
 
 ```
 ai-workspace/
-├── README.md
-├── config/
-│   ├── settings.yaml           # 通知設定など（git 管理外）
-│   ├── settings.yaml.example   # settings.yaml のテンプレート
-│   ├── projects.yaml           # 開発対象リポジトリ一覧（git 管理外）
-│   └── projects.yaml.example   # projects.yaml のテンプレート
-├── issues/                     # git 管理外（.gitignore）
-│   └── issue_001_task_app/    # id は issue_NNN_slug
-│       ├── request.yaml       # 要望記録（スキーマ: schemas/request-schema.md）
-│       ├── phase.yaml         # フェーズ管理（スキーマ: schemas/phase-schema.md）
+├── config/                     # 設定ファイル
+│   ├── settings.yaml           # 通知設定（git 管理外）
+│   └── projects.yaml           # 開発対象リポジトリ一覧（git 管理外）
+├── issues/                     # Issue 単位の成果物（git 管理外）
+│   └── {issue-id}/
+│       ├── request.yaml
+│       ├── phase.yaml
 │       ├── business-requirements.md
 │       ├── system-requirements.md
 │       ├── detailed-design.md
 │       └── tasks/
-│           └── development.yaml  # 開発タスク記憶（フェーズ 5、スキーマ: schemas/tasks-schema.md）
-├── scripts/
-│   ├── ntfy.sh                 # ntfy 通知送信
-│   └── start-esa-mcp.sh        # esa MCP サーバー起動スクリプト
-├── .env                        # 環境変数（git 管理外）
-├── .env.example                # 環境変数テンプレート
-├── rulesync.jsonc              # rulesync 設定ファイル
-├── .rulesync/                  # rulesync の編集正本（ここを編集して rulesync generate）
-│   ├── mcp.json                # MCP 設定（git 管理外）
-│   ├── mcp.json.example        # MCP 設定テンプレート
-│   ├── rules/                  # プロジェクトルール（CLAUDE.md / AGENTS.md の元）
-│   │   ├── overview.md         # ai-workspace 概要
-│   │   └── git-command.md      # git コマンド実行制限ルール
-│   └── skills/
-│       ├── dev-workflow/       # 開発ワークフロー
-│       │   ├── SKILL.md
-│       │   ├── references/     # フェーズ定義・スキーマ・config リファレンス
-│       │   │   ├── phases-detail.md
-│       │   │   ├── config-reference.md
-│       │   │   └── schemas/
-│       │   │       ├── request-schema.md
-│       │   │       ├── phase-schema.md
-│       │   │       └── tasks-schema.md
-│       │   └── assets/         # 成果物ひな形
-│       │       ├── request.yaml
-│       │       ├── phase.yaml
-│       │       ├── business-requirements.md
-│       │       ├── system-requirements.md
-│       │       └── detailed-design.md
-│       └── ps-coupon-project/  # プロジェクト固有スキル例
-│           ├── SKILL.md
-│           └── references/
-├── AGENTS.md                   # rulesync 生成（git 管理外）
-├── CLAUDE.md                   # rulesync 生成（git 管理外）
-├── .cursor/                    # rulesync で展開（Cursor 用・git 管理外）
-│   ├── rules/
-│   └── skills/
-├── .claude/                    # rulesync で展開（Claude Code 用・git 管理外）
-│   └── skills/
-└── .codex/                     # rulesync で展開（Codex 用・git 管理外）
-    └── skills/
+├── .rulesync/                  # AI エージェント設定の編集正本
+│   ├── rules/                  # ルール定義
+│   ├── skills/                 # スキル定義（dev-workflow, investigation-report, skill-creator）
+│   ├── subagents/              # サブエージェント定義（architect, code-reviewer, tdd-guide など）
+│   ├── commands/               # カスタムコマンド（investigate, learn, plan）
+│   └── mcp.json                # MCP サーバー設定（git 管理外）
+├── .cursor/                    # Cursor 用（rulesync で自動生成・git 管理外）
+├── .claude/                    # Claude Code 用（rulesync で自動生成・git 管理外）
+├── .codex/                     # Codex CLI 用（rulesync で自動生成・git 管理外）
+├── scripts/                    # ユーティリティスクリプト
+├── AGENTS.md                   # エージェント設定（rulesync で自動生成・git 管理外）
+├── CLAUDE.md                   # Claude 設定（rulesync で自動生成・git 管理外）
+└── rulesync.jsonc              # rulesync 設定
 ```
+
+**重要**: `.rulesync/` が編集正本。変更後は `rulesync generate` で各エージェント用設定を展開すること。
 
 ## 開発フロー
 
@@ -171,6 +124,32 @@ sequenceDiagram
 - **タスク記憶でコンテキスト維持**: フェーズ 5 では `tasks/development.yaml` に進捗を記録し、セッション切れ後も復帰可能
 - **git 操作の制御**: `git_command` 設定により、AI による git コマンド実行の可否を制御可能（詳細は後述）
 
+## AI エージェント設定の統合について
+
+このリポジトリには、以前 dotfiles で管理していた AI 関連ファイルを統合しています。
+
+### 統合された設定
+
+`.rulesync/` 配下に以下を集約:
+
+- **rules/** - AI エージェント用ルール（プロジェクト概要、git コマンド制限など）
+- **skills/** - スキル定義（dev-workflow, investigation-report, skill-creator）
+- **subagents/** - サブエージェント定義（architect, code-investigator, code-reviewer, planner, security-reviewer, tdd-guide）
+- **commands/** - カスタムコマンド（investigate, learn, plan）
+- **mcp.json** - MCP サーバー設定
+
+### rulesync による展開
+
+`rulesync generate` コマンドで、`.rulesync/` から各エージェント用の設定を自動生成:
+
+| エージェント | 生成先 | 内容 |
+| --- | --- | --- |
+| Cursor | `.cursor/` | rules, skills, agents, commands |
+| Claude Code | `.claude/` | rules, skills, agents, commands |
+| Codex CLI | `.codex/` | memories (rules), skills |
+
+これにより、1つの編集正本（`.rulesync/`）から複数のエージェント用設定を一元管理できます。
+
 ## セットアップ
 
 ### 1. リポジトリをクローン
@@ -229,15 +208,37 @@ bash scripts/ntfy.sh "テスト通知"
 
 スマホの [ntfy](https://ntfy.sh) アプリで `config/settings.yaml` のトピックを購読すること
 
-### 5. エージェント設定の生成（任意)
+### 5. エージェント設定の生成
 
-Cursor / Claude Code / Codex で開く場合、ルールとスキルを展開すること
+Cursor / Claude Code / Codex で開く場合、AI エージェント設定を展開すること
 
 ```bash
+# rulesync をインストール（未インストールの場合）
+brew install rulesync
+
+# .rulesync/ から各エージェント用の設定を生成
 rulesync generate
 ```
 
-編集する場合は `.rulesync/` 配下を変更してから再度 `rulesync generate` を実行すること
+このコマンドで以下が生成される:
+
+- `.cursor/` - Cursor 用の rules, skills, agents, commands
+- `.claude/` - Claude Code 用の rules, skills, agents, commands
+- `.codex/` - Codex CLI 用の memories, skills
+- `.mcp.json` - MCP サーバー設定
+- `AGENTS.md`, `CLAUDE.md` - エージェント設定ファイル
+
+**重要**: `.rulesync/` 配下を編集した場合は、必ず `rulesync generate` を再実行すること。
+`.cursor/`, `.claude/`, `.codex/` は自動生成されるため、直接編集しないこと。
+
+### 6. MCP サーバー設定（任意）
+
+esa 連携などの MCP サーバーを使う場合:
+
+1. `.env` にトークンを設定
+2. `.rulesync/mcp.json` を編集
+3. `rulesync generate` を実行して `.mcp.json` を生成
+4. MCP サーバーを起動（例: `./scripts/start-esa-mcp.sh`）
 
 ## 使い方
 
@@ -388,6 +389,35 @@ bash scripts/start-esa-mcp.sh
 
 詳細: [MCP 公式ドキュメント](https://modelcontextprotocol.io/)
 
+## スキルとサブエージェント
+
+### 利用可能なスキル
+
+| スキル | 説明 | 使用タイミング |
+| --- | --- | --- |
+| **dev-workflow** | Issue 単位の開発フロー管理 | 新規要望、Issue 進行、承認・差し戻し時 |
+| **investigation-report** | コード調査レポート作成 | 既存機能調査、バグ原因特定、パフォーマンス分析時 |
+| **skill-creator** | スキル作成支援 | 新しいスキルを作成する時 |
+
+### 利用可能なサブエージェント
+
+| サブエージェント | 説明 | 使用タイミング |
+| --- | --- | --- |
+| **architect** | システム設計・アーキテクチャ判断 | 新機能計画、大規模リファクタリング時 |
+| **code-investigator** | コード調査・分析 | バグ調査、機能理解、データ整合性確認時 |
+| **code-reviewer** | コードレビュー | コード変更後の品質・セキュリティ確認 |
+| **planner** | タスク計画 | 複雑なタスクの分解・計画時 |
+| **security-reviewer** | セキュリティレビュー | セキュリティ上の懸念がある変更時 |
+| **tdd-guide** | テスト駆動開発支援 | 新機能・バグ修正・リファクタリング時 |
+
+### カスタムコマンド
+
+| コマンド | 説明 |
+| --- | --- |
+| **/investigate** | コードベースの調査を開始 |
+| **/learn** | 既存コードから学習 |
+| **/plan** | タスクの計画を立案 |
+
 ## リファレンス
 
 ### フェーズ詳細
@@ -403,3 +433,9 @@ bash scripts/start-esa-mcp.sh
 ### config 設定
 
 - [projects.yaml 設定リファレンス](.rulesync/skills/dev-workflow/references/config-reference.md)
+
+### スキル詳細
+
+- [dev-workflow](.rulesync/skills/dev-workflow/SKILL.md)
+- [investigation-report](.rulesync/skills/investigation-report/SKILL.md)
+- [skill-creator](.rulesync/skills/skill-creator/SKILL.md)
