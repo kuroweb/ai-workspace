@@ -62,34 +62,33 @@ globs: ["**/*"]
 
 **ユーザー指示：**
 ```
-price-monitoring プロジェクトで Foo.ts を編集して
+[プロジェクト ID] で Foo.ts を編集して
 ```
 
 **AI の処理：**
 ```
 1. config/projects.yaml を参照
-2. "price-monitoring" にマッチ（id フィールド）
+2. [プロジェクト ID] にマッチ（id フィールド）
 3. 設定を確認：
-   - path: ~/environment/price-monitoring
-   - git_command: enabled
-   - repo: github.com/kuroweb/price-monitoring
-4. ~/environment/price-monitoring/Foo.ts を対象に編集を実行
+   - path: <プロジェクトパス>
+   - git_command: <enabled|disabled>
+   - repo: <リモートリポジトリ URL>
+4. <プロジェクトパス>/Foo.ts を対象に編集を実行
 ```
 
 **ユーザー指示：**
 ```
-okite-ai プロジェクトで何かコミットして
+[プロジェクト ID] でコードを実装して
 ```
 
 **AI の処理：**
 ```
 1. config/projects.yaml を参照
-2. "okite-ai" にマッチ（id フィールド）
+2. [プロジェクト ID] にマッチ
 3. 設定を確認：
-   - git_command: disabled ← git-command.md ルール適用
-4. 以下のメッセージを出力：
-   「okite-ai プロジェクトは config/projects.yaml で git_command: disabled に設定されているため、
-    git コマンドの実行はできません。必要であればターミナルで直接実行してください。」
+   - git_command: <enabled|disabled> ← この設定に基づく
+4. git_command: disabled の場合、git-command.md ルールを適用
+   （git コマンド実行不可。ファイル編集のみ）
 ```
 
 ## マッチなしの場合
