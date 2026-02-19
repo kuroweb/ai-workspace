@@ -97,8 +97,28 @@ globs: ["**/*"]
 
 ```
 指定されたプロジェクト「[name]」が config/projects.yaml に見つかりません。
-config/projects.yaml で有効なプロジェクト ID を確認してください。
+
+config/projects.yaml にプロジェクトを追加してください。以下のテンプレートを参考に：
+
+  - id: [プロジェクト ID]
+    name: "[プロジェクト名]"
+    path: "[ローカルパス]"
+    repo: "[リモートリポジトリ URL]"
+    default_branch: [デフォルトブランチ]
+    git_command: [enabled|disabled]
+    notes: |
+      - [説明]
 ```
+
+### 参考値
+
+- `id`: リポジトリ識別子（英小文字・ハイフン区切り。`project_ids` で参照される）
+- `name`: 表示用プロジェクト名
+- `path`: `~/environment/[name]` など相対パスを推奨
+- `repo`: `github.com/user/repo` 形式
+- `default_branch`: `main` または `master`
+- `git_command`: AI が git コマンド実行可能かどうか（デフォルト: `disabled`）
+- `notes`: プロジェクトの説明（複数行可）
 
 ## 参照するファイル
 
