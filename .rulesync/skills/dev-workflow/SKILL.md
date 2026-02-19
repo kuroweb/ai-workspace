@@ -189,7 +189,7 @@ issues/<issue_id>/   # issue_id は issue_NNN_slug（例: issue_001_add_notifica
 
 ## 成果物ひな形（assets/）
 
-コピー元: `./assets/`（このスキルと同じディレクトリ内）。編集の正本は .rulesync 側（.rulesync/skills/dev-workflow/assets/）であり、rulesync generate で .cursor / .codex 等に反映される。
+コピー元: `./assets/`（このスキルと同じディレクトリ内）
 
 - **request.yaml** のスキーマ: [`references/schemas/request-schema.md`](references/schemas/request-schema.md) を参照。
 - **phase.yaml** のスキーマ: [`references/schemas/phase-schema.md`](references/schemas/phase-schema.md) を参照。
