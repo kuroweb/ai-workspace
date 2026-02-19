@@ -120,6 +120,7 @@ AI エージェントが従うべき開発ルール。プロジェクト規約�
 | --- | --- |
 | **learning-before-coding** | 新しいコードを書く前に既存実装を分析。プロジェクト固有のパターンを理解してから実装 |
 | **less-is-more** | 過剰設計を避け、シンプルで保守しやすいコードを書く（YAGNI, KISS原則） |
+| **avoiding-ambiguous-suffixes** | 型・モジュール命名で曖昧なサフィックス（Manager, Util等）を避け、責務を明確に |
 | **explain-skill-selection** | スキル呼び出し前に、選択スキルと理由を明示 |
 
 ## スキルとサブエージェント
