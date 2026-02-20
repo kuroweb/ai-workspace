@@ -7,8 +7,7 @@ AI エージェント設定（rules, skills, subagents, commands, MCP）を一�
 このリポジトリは以下を提供する：
 
 - **AI エージェント設定の一元管理** - `.rulesync/` を編集正本として、複数のエージェント用設定を自動生成
-- **スキルセット** - 開発ワークフロー、コード調査、スキル作成など、実践的なスキル群
-- **サブエージェント** - アーキテクト、コードレビュアー、TDDガイドなど、専門タスク用エージェント
+- **rules / skills / subagents** - ルール、スキル、サブエージェントの定義（リポジトリごとに差異あり）
 - **プロジェクト横断管理** - `config/projects.yaml` で複数の開発対象リポジトリを管理
 
 ## リポジトリ構成
@@ -20,17 +19,11 @@ ai-workspace/
 │   └── projects.yaml           # 開発対象リポジトリ一覧（git 管理外）
 ├── issues/                     # Issue 単位の成果物（git 管理外）
 │   └── {issue-id}/
-│       ├── request.yaml
-│       ├── phase.yaml
-│       ├── business-requirements.md
-│       ├── system-requirements.md
-│       ├── detailed-design.md
-│       └── tasks/
 ├── .rulesync/                  # AI エージェント設定の編集正本
 │   ├── rules/                  # ルール定義
-│   ├── skills/                 # スキル定義（dev-workflow, investigating-code, skill-creator）
-│   ├── subagents/              # サブエージェント定義（architect, code-reviewer, tdd-guide など）
-│   ├── commands/               # カスタムコマンド（investigate, learn, plan）
+│   ├── skills/                 # スキル定義
+│   ├── subagents/              # サブエージェント定義
+│   ├── commands/               # カスタムコマンド
 │   └── mcp.json                # MCP サーバー設定（git 管理外）
 ├── .cursor/                    # Cursor 用（rulesync で自動生成・git 管理外）
 ├── .claude/                    # Claude Code 用（rulesync で自動生成・git 管理外）
@@ -43,114 +36,13 @@ ai-workspace/
 
 **重要**: `.rulesync/` が編集正本。変更後は `rulesync generate` で各エージェント用設定を展開すること。
 
-## dev-workflow スキル
-
-Issue 単位の開発ワークフロー（要望→要件→設計→実装→レビュー→クローズ）を管理するスキル。
-
-### フェーズ定義
-
-| フェーズ | 名前 | 説明 |
-| --- | --- | --- |
-| 1 | request | 要望を `request.yaml` に記録 → ntfy 通知 → 承認で次へ |
-| 2 | business_requirements | **ヒアリング** → ビジネス要件を作成 → ntfy 通知 → 承認で次へ |
-| 3 | system_requirements | **ヒアリング** → システム要件を作成 → ntfy 通知 → 承認で次へ |
-| 4 | detailed_design | 詳細設計を作成 → ntfy 通知 → 承認で次へ |
-| 5 | development | 設計に基づき実装。タスク記憶（`tasks/development.yaml`）を更新しながら進行 |
-| 6 | code_review | `review_method` に応じて PR または手元 diff でレビュー → 承認で次へ |
-| 7 | close | 全フェーズ完了 → Issue クローズ |
-
-### フロー図
-
-```mermaid
-sequenceDiagram
-  participant User as User
-  participant AI as AI
-  participant Local as issues/issue_xxx/
-  participant Repo as 開発対象リポジトリ
-  participant GA as GitHub Action
-
-  Note over User,GA: フェーズ 1 request
-  User->>AI: 要望を記述
-  AI->>Local: request.yaml に要望を記録
-  AI->>User: ntfy でレビュー依頼通知
-  User->>AI: チャットで「承認」
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 2 business_requirements
-  AI->>Local: business-requirements.md に出力
-  AI->>User: ntfy でレビュー依頼通知
-  User->>AI: チャットで「承認」
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 3 system_requirements
-  AI->>Local: system-requirements.md に出力
-  AI->>User: ntfy でレビュー依頼通知
-  User->>AI: 承認
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 4 detailed_design
-  AI->>Local: detailed-design.md に出力
-  AI->>User: ntfy でレビュー依頼通知
-  User->>AI: 承認
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 5 development
-  loop 開発サイクル
-    AI->>Repo: コード変更・ローカルコミット
-    AI->>Local: tasks/development.yaml にタスク記憶を記録
-  end
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 6 code_review
-  AI->>Repo: PR 作成（review_method: pr の場合）
-  AI->>User: ntfy で MR レビュー依頼通知
-  User->>Repo: レビュー承認・マージ
-  AI->>Local: phase.yaml 更新
-
-  Note over User,GA: フェーズ 7 close
-  AI->>Local: 全フェーズ completed
-  Note over User,GA: Issue クローズ
-```
-
-## ルール
-
-AI エージェントが従うべき開発ルール。プロジェクト規約と品質基準を定義。
-
-| ルール | 説明 |
-| --- | --- |
-| **learning-before-coding** | 新しいコードを書く前に既存実装を分析。プロジェクト固有のパターンを理解してから実装 |
-| **less-is-more** | 過剰設計を避け、シンプルで保守しやすいコードを書く（YAGNI, KISS原則） |
-| **avoiding-ambiguous-suffixes** | 型・モジュール命名で曖昧なサフィックス（Manager, Util等）を避け、責務を明確に |
-| **explain-skill-selection** | スキル呼び出し前に、選択スキルと理由を明示 |
-
-## スキルとサブエージェント
-
-### 利用可能なスキル
-
-| スキル | 説明 | 使用タイミング |
-| --- | --- | --- |
-| **dev-workflow** | Issue 単位の開発フロー管理 | 新規要望、Issue 進行、承認・差し戻し時 |
-| **investigating-code** | コード調査・レポート作成（Markdown） | 既存機能調査、バグ原因特定、パフォーマンス分析時 |
-| **intent-based-dedup** | 意図に基づく重複コード判定 | コード重複を共通化すべきか判断する際（DRY原則の誤適用防止） |
-| **law-of-demeter** | デメテルの法則に基づくコードレビュー | オブジェクト間の結合度が高い場合、Train Wreckパターンの検出・修正時 |
-| **skill-creator** | スキル作成支援 | 新しいスキルを作成する時 |
-
-### 利用可能なサブエージェント
-
-| サブエージェント | 説明 | 使用タイミング |
-| --- | --- | --- |
-| **architect** | システム設計・アーキテクチャ判断 | 新機能計画、大規模リファクタリング時 |
-| **code-investigator** | コード調査・分析 | バグ調査、機能理解、データ整合性確認時 |
-| **code-reviewer** | コードレビュー | コード変更後の品質・セキュリティ確認 |
-| **planner** | タスク計画 | 複雑なタスクの分解・計画時 |
-| **security-reviewer** | セキュリティレビュー | セキュリティ上の懸念がある変更時 |
-| **tdd-guide** | テスト駆動開発支援 | 新機能・バグ修正・リファクタリング時 |
+rules / skills / subagents の詳細は `.rulesync/` 内の各リポジトリを参照。
 
 ## セットアップ
 
 ```bash
 # 1. クローン
-git clone https://github.com/your-username/ai-workspace.git
+git clone <repository-url>
 cd ai-workspace
 
 # 2. 設定ファイル作成
@@ -167,47 +59,53 @@ rulesync generate
 bash scripts/ntfy.sh "テスト通知"
 ```
 
-### 設定ファイル
+## スキル・ルールのインポート
 
-- **config/settings.yaml** - ntfy トピック設定
-- **config/projects.yaml** - 開発対象リポジトリ一覧（詳細は [config リファレンス](.rulesync/skills/dev-workflow/references/config-reference.md)）
-- **.env** - MCP サーバーのトークン（任意）
-- **.rulesync/mcp.json** - MCP サーバー設定（任意）
+`--from` で指定したパスから、`.rulesync/` 相当の設定をコピーして取り込む。
 
-## 使い方
+**利用シーン**: テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時。
 
-### dev-workflow: 新規 Issue を開始
-
-```
-ユーザー: タスク管理アプリを作りたい。スマホから使えてシンプルなもの
-AI: issues/issue_001_task_app/ を作成しました。レビューをお願いします（ntfy で通知）
-```
-
-### dev-workflow: 承認・差し戻し
+### 実行例
 
 ```bash
-# 承認
-承認
+cd /path/to/ai-workspace
 
-# 差し戻し
-issue_001_task_app 差し戻し: 機能要件に通知機能を追加して
+# 全てを一括で取り込む（既存はスキップ）
+./scripts/agent-import.sh --all --from /path/to/source
+
+# 上書きする場合
+./scripts/agent-import.sh --all --force --from /path/to/source
 ```
 
-### dev-workflow: Issue の進行状況確認
+一部だけ取り込みたい場合は、`--skills` / `--rules` / `--subagents` で対象を指定する。
 
+```bash
+./scripts/agent-import.sh --skills dev-workflow --from /path/to/source   # スキル1つだけ
+./scripts/agent-import.sh --skills-all --from /path/to/source            # スキル全件
+./scripts/agent-import.sh --rules-all --from /path/to/source             # ルール全件
+./scripts/agent-import.sh --mcp --from /path/to/source                 # mcp.json.example のみ
 ```
-ユーザー: Issue の状況を教えて
-AI: - issue_001_task_app: フェーズ 3 (system_requirements) - 承認待ち
-    - issue_002_add_notification: フェーズ 5 (development) - 進行中
-```
 
-### その他のスキル
+### オプション
 
-他のスキル（investigating-code, skill-creator など）は、トリガーワードやコンテキストで自動起動します。詳細は [スキル詳細](.rulesync/skills/) を参照。
+| オプション | 意味 |
+| --- | --- |
+| `--all` | skills, rules, subagents, mcp を全て取り込む |
+| `--force` | 既存ファイルを上書きする（省略時はスキップ） |
+| `--from <path>` | コピー元（ワークスペースルートか `.rulesync` のパス） |
 
-## リファレンス
+**一部だけ取り込む場合**（`--all` の代わりに以下を指定）:
 
-- [フェーズ詳細とヒアリングガイド](.rulesync/skills/dev-workflow/references/phases-detail.md)
-- [projects.yaml 設定リファレンス](.rulesync/skills/dev-workflow/references/config-reference.md)
-- [スキーマ定義](.rulesync/skills/dev-workflow/references/schemas/)
-- [スキル詳細](.rulesync/skills/)
+| オプション | 意味 |
+| --- | --- |
+| `--skills <name>` / `--skills-all` | スキルを1つ / 全件 |
+| `--rules <name>` / `--rules-all` | ルールを1つ / 全件 |
+| `--subagents <name>` / `--subagents-all` | サブエージェントを1つ / 全件 |
+| `--mcp` | `mcp.json.example` のみ（認証情報は含まない） |
+
+## 設定ファイル
+
+- **config/settings.yaml** - ntfy トピック設定
+- **config/projects.yaml** - 開発対象リポジトリ一覧（詳細は `.rulesync/skills/` 内の config リファレンスを参照）
+- **.env** - MCP サーバーのトークン（任意）
+- **.rulesync/mcp.json** - MCP サーバー設定（任意）
