@@ -17,6 +17,10 @@ CLAUDE.md
 issues/*
 !issues/.keep
 
+# repositories
+repositories/*
+!repositories/.keep
+
 # environment variables
 .env
 
