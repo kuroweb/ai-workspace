@@ -1,6 +1,5 @@
 # workspace config files
 config/settings.yaml
-config/projects.yaml
 
 .rulesync/mcp.json
 
@@ -17,9 +16,9 @@ CLAUDE.md
 issues/*
 !issues/.keep
 
-# repositories
-repositories/*
-!repositories/.keep
+# projects
+projects/*
+!projects/.keep
 
 # environment variables
 .env

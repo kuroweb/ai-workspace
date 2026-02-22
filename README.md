@@ -8,17 +8,16 @@ AI エージェント設定（rules, skills, subagents, commands, MCP）を一�
 
 - **AI エージェント設定の一元管理** - `.rulesync/` を編集正本として、複数のエージェント用設定を自動生成
 - **rules / skills / subagents** - ルール、スキル、サブエージェントの定義（リポジトリごとに差異あり）
-- **プロジェクト横断管理** - `config/projects.yaml` で複数の開発対象リポジトリを管理
 
 ## リポジトリ構成
 
 ```
 ai-workspace/
 ├── config/                     # 設定ファイル
-│   ├── settings.yaml           # 通知設定（git 管理外）
-│   └── projects.yaml           # 開発対象リポジトリ一覧（git 管理外）
+│   └── settings.yaml           # 通知設定（git 管理外）
 ├── issues/                     # Issue 単位の成果物（git 管理外）
 │   └── {issue-id}/
+├── projects/                   # 各リポジトリへのシンボリックリンクを配置
 ├── .rulesync/                  # AI エージェント設定の編集正本
 │   ├── rules/                  # ルール定義
 │   ├── skills/                 # スキル定義
@@ -47,7 +46,6 @@ cd ai-workspace
 
 # 2. 設定ファイル作成
 cp config/settings.yaml.example config/settings.yaml
-cp config/projects.yaml.example config/projects.yaml
 cp .env.example .env  # MCP使用時のみ
 cp .rulesync/mcp.json.example .rulesync/mcp.json  # MCP使用時のみ
 
@@ -55,7 +53,10 @@ cp .rulesync/mcp.json.example .rulesync/mcp.json  # MCP使用時のみ
 brew install rulesync
 rulesync generate
 
-# 4. 通知テスト
+# 4. 開発対象のリポジトリを projects/ 以下にシンボリックリンクで配置する（必須）
+ln -s /path/to/your-repo projects/your-repo
+
+# 5. 通知テスト
 bash scripts/ntfy.sh "テスト通知"
 ```
 
@@ -105,7 +106,6 @@ cd /path/to/ai-workspace
 
 ## 設定ファイル
 
-- **config/settings.yaml** - ntfy トピック設定
-- **config/projects.yaml** - 開発対象リポジトリ一覧（詳細は `.rulesync/skills/` 内の config リファレンスを参照）
+- **config/settings.yaml** - ntfy トピック設定、`git_command`（AI の git 実行可否: `enabled` / `disabled`、未設定時は disabled）
 - **.env** - MCP サーバーのトークン（任意）
 - **.rulesync/mcp.json** - MCP サーバー設定（任意）

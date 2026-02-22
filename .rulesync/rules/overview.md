@@ -11,7 +11,7 @@ Issue 単位の開発フロー（要望 → ビジネス要件 → システム�
 
 - **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で `.cursor/`, `.claude/`, `.codex/` に展開される。
 - **スキル**: `.rulesync/skills/` で管理。`rulesync generate` で各エージェント用に展開される。
-- **設定**: `config/projects.yaml`, `config/settings.yaml` を参照。
+- **設定**: `config/settings.yaml` を参照。
 
 このファイルは `.rulesync/rules/overview.md` が正本です。Claude Code 用のルールは `rulesync generate` で `.claude/` に生成されます。
 
