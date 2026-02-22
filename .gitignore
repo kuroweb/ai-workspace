@@ -15,6 +15,10 @@ CLAUDE.md
 !.cursor/commands/kiro/
 !.codex/prompts/kiro-*.md
 
+# kiro instance-specific (workspace名・projects の組み合わせごとに異なるためローカルのみ)
+.kiro/steering/
+.kiro/specs/
+
 # issues
 issues/*
 !issues/.keep
