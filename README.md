@@ -29,15 +29,21 @@ ai-workspace/
 │   ├── commands/               # カスタムコマンド
 │   └── mcp.json                # MCP サーバー設定（git 管理外）
 ├── .cursor/                    # Cursor 用（rulesync で自動生成・git 管理外）
+│   └── commands/kiro/          # Kiro コマンド（例外的に git 管理・rulesync 管理外）
 ├── .claude/                    # Claude Code 用（rulesync で自動生成・git 管理外）
+│   └── commands/kiro/          # Kiro コマンド（例外的に git 管理・rulesync 管理外）
 ├── .codex/                     # Codex CLI 用（rulesync で自動生成・git 管理外）
+│   └── prompts/kiro-*.md       # Kiro プロンプト（例外的に git 管理・rulesync 管理外）
 ├── scripts/                    # ユーティリティスクリプト
 ├── AGENTS.md                   # エージェント設定（rulesync で自動生成・git 管理外）
 ├── CLAUDE.md                   # Claude 設定（rulesync で自動生成・git 管理外）
 └── rulesync.jsonc              # rulesync 設定
 ```
 
-**重要**: `.rulesync/` が編集正本。変更後は `rulesync generate` で各エージェント用設定を展開すること。
+**重要**:
+
+- `.rulesync/` が編集正本。変更後は `rulesync generate` で各エージェント用設定を展開すること。
+- **例外**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md` は git 管理しているが、rulesync では管理していない（直接編集可能）。
 
 rules / skills / subagents の詳細は `.rulesync/` 内の各リポジトリを参照。
 

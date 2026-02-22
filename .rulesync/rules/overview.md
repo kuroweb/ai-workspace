@@ -11,6 +11,7 @@ Issue 単位の開発フロー（要望 → ビジネス要件 → システム�
 
 - **開発対象リポジトリ**: `projects/` 配下に配置（シンボリックリンクまたはクローン）。このワークスペースをルートに、各リポジトリへ共通の AI 設定を適用して開発する。
 - **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で `.cursor/`, `.claude/`, `.codex/` に展開される。
+- **Kiro コマンド**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md` は git 管理しているが、rulesync では管理していない（直接編集可能）。
 - **スキル**: `.rulesync/skills/` で管理。`rulesync generate` で各エージェント用に展開される。
 - **設定**: `config/settings.yaml` を参照。
 
@@ -67,3 +68,28 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 - Load entire `.kiro/steering/` as project memory
 - Default files: `product.md`, `tech.md`, `structure.md`
 - Custom files are supported (managed via `/kiro:steering-custom`)
+
+### Projects Analysis (CRITICAL)
+
+When running `/kiro:steering` (Bootstrap or Sync mode), you MUST analyze `projects/` subdirectories:
+
+**Bootstrap Mode**:
+
+1. Check if `projects/` exists and contains subdirectories (symlinks or clones)
+2. For each project in `projects/`:
+   - Read `README.md`, `package.json`, `go.mod`, `Cargo.toml`, etc.
+   - Identify tech stack (language, framework, runtime)
+   - Extract architecture patterns (layered, feature-first, DDD, etc.)
+   - Note naming conventions, import strategies
+3. Merge patterns from all projects into steering files:
+   - `tech.md`: Common frameworks, standards across projects
+   - `structure.md`: Cross-project organization patterns
+   - `product.md`: If projects share domain/purpose
+
+**Sync Mode**:
+
+- Check if new projects added to `projects/`
+- Verify existing steering reflects current project patterns
+- Report drift if projects diverged from steering
+
+**Why**: This workspace manages multiple development repositories. Steering must capture patterns from actual codebases, not just workspace-level config.
