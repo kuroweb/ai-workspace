@@ -80,7 +80,7 @@ cd /path/to/ai-workspace
 一部だけ取り込みたい場合は、`--skills` / `--rules` / `--subagents` で対象を指定する。
 
 ```bash
-./scripts/agent-import.sh --skills dev-workflow --from /path/to/source   # スキル1つだけ
+./scripts/agent-import.sh --skills plan --from /path/to/source   # スキル1つだけ
 ./scripts/agent-import.sh --skills-all --from /path/to/source            # スキル全件
 ./scripts/agent-import.sh --rules-all --from /path/to/source             # ルール全件
 ./scripts/agent-import.sh --mcp --from /path/to/source                 # mcp.json.example のみ

@@ -4,7 +4,7 @@
 # Examples:
 #   ./scripts/agent-import.sh --all --from /path/to/source
 #   ./scripts/agent-import.sh --all --force --from /path/to/source
-#   ./scripts/agent-import.sh --skills dev-workflow --from /path/to/source
+#   ./scripts/agent-import.sh --skills plan --from /path/to/source
 
 set -e
 
