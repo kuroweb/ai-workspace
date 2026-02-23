@@ -11,7 +11,23 @@ AI エージェント設定（rules, skills, subagents, commands, MCP）を一�
 
 ## 開発スタイル
 
-開発対象のリポジトリは **`projects/`** 配下にシンボリックリンク（またはクローン）で配置する。このワークスペースをルートにし、`projects/` 内の各リポジトリに対して共通の AI 設定・ルール・スキルを適用して開発する。
+**ai-workspace をルートとして開く**（Single-Root）。開発対象リポジトリは **`projects/`** 配下にクローン（またはシンボリックリンク）で配置する。
+
+```bash
+git clone <repository-url> projects/your-repo
+```
+
+Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`projects/` 以下のリポジトリも一括で扱える。
+
+### Cursor でコード差分が正しく表示されない問題
+
+`projects/` 配下にシンボリックリンクを置いた場合、Cursor で AI の変更を承認する際にエディタ上のインライン DIFF が正しく表示されないことがある。
+
+**対処法**:
+
+`projects/` 配下のシンボリックリンクを `.code-workspace` ファイルに登録し、そのワークスペースファイルを Cursor で開く（マルチルートワークスペースとして開かれる）
+
+設定例は `ai-workspace.code-workspace.example` を参照。
 
 ## リポジトリ構成
 
@@ -21,7 +37,7 @@ ai-workspace/
 │   └── settings.yaml           # 通知設定（git 管理外）
 ├── issues/                     # Issue 単位の成果物（git 管理外）
 │   └── {issue-id}/
-├── projects/                   # 各リポジトリへのシンボリックリンクを配置
+├── projects/                   # 各リポジトリをクローンまたはシンボリックリンクで配置
 ├── .rulesync/                  # AI エージェント設定の編集正本
 │   ├── rules/                  # ルール定義
 │   ├── skills/                 # スキル定義
@@ -63,8 +79,8 @@ cp .rulesync/mcp.json.example .rulesync/mcp.json  # MCP使用時のみ
 brew install rulesync
 rulesync generate
 
-# 4. 開発対象のリポジトリを projects/ 以下にシンボリックリンクで配置する（必須）
-ln -s /path/to/your-repo projects/your-repo
+# 4. 開発対象のリポジトリを projects/ 以下にクローン（またはシンボリックリンク）で配置する（必須）
+git clone <repository-url> projects/your-repo
 
 # 5. 通知テスト
 bash scripts/ntfy.sh "テスト通知"

@@ -77,7 +77,7 @@ When running `/kiro:steering` (Bootstrap or Sync mode), you MUST analyze `projec
 
 1. Check if `projects/` exists and contains subdirectories (symlinks or clones)
 2. For each project in `projects/`:
-   - Read `README.md`, `package.json`, `go.mod`, `Cargo.toml`, etc.
+   - Read `README.md` and project overview documentation
    - Identify tech stack (language, framework, runtime)
    - Extract architecture patterns (layered, feature-first, DDD, etc.)
    - Note naming conventions, import strategies

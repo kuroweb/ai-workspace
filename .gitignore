@@ -35,3 +35,6 @@ projects/*
 
 # Workspace
 *.code-workspace
+
+# vscode
+.vscode/settings.json

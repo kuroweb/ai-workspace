@@ -1,0 +1,13 @@
+{
+	"folders": [
+    {
+      "name": "ai-workspace",
+      "path": "."
+    },
+    {
+      "name": "project_name",
+      "path": "projects/project_name"
+    }
+  ],
+  "settings": {}
+}
