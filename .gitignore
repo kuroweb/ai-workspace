@@ -19,10 +19,6 @@ CLAUDE.md
 .kiro/steering/
 .kiro/specs/
 
-# issues
-issues/*
-!issues/.keep
-
 # projects
 projects/*
 !projects/.keep
