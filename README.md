@@ -35,8 +35,6 @@ Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`pr
 ai-workspace/
 ├── config/                     # 設定ファイル
 │   └── settings.yaml           # 通知設定（git 管理外）
-├── issues/                     # Issue 単位の成果物（git 管理外）
-│   └── {issue-id}/
 ├── projects/                   # 各リポジトリをクローンまたはシンボリックリンクで配置
 ├── .rulesync/                  # AI エージェント設定の編集正本
 │   ├── rules/                  # ルール定義
