@@ -9,26 +9,6 @@ AI エージェント設定（rules, skills, subagents, commands, MCP）を一�
 - **AI エージェント設定の一元管理** - `.rulesync/` を編集正本として、複数のエージェント用設定を自動生成
 - **rules / skills / subagents** - ルール、スキル、サブエージェントの定義（リポジトリごとに差異あり）
 
-## 開発スタイル
-
-**ai-workspace をルートとして開く**（Single-Root）。開発対象リポジトリは **`projects/`** 配下にクローン（またはシンボリックリンク）で配置する。
-
-```bash
-git clone <repository-url> projects/your-repo
-```
-
-Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`projects/` 以下のリポジトリも一括で扱える。
-
-### Cursor でコード差分が正しく表示されない問題
-
-`projects/` 配下にシンボリックリンクを置いた場合、Cursor で AI の変更を承認する際にエディタ上のインライン DIFF が正しく表示されないことがある。
-
-**対処法**:
-
-`projects/` 配下のシンボリックリンクを `.code-workspace` ファイルに登録し、そのワークスペースファイルを Cursor で開く（マルチルートワークスペースとして開かれる）
-
-設定例は `ai-workspace.code-workspace.example` を参照。
-
 ## リポジトリ構成
 
 ```
@@ -54,12 +34,22 @@ ai-workspace/
 └── rulesync.jsonc              # rulesync 設定
 ```
 
-**重要**:
+### 編集正本のルール
 
 - `.rulesync/` が編集正本。変更後は `rulesync generate` で各エージェント用設定を展開すること。
 - **例外**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md` は git 管理しているが、rulesync では管理していない（直接編集可能）。
 
-rules / skills / subagents の詳細は `.rulesync/` 内の各リポジトリを参照。
+rules / skills / subagents の詳細は `.rulesync/` 内の各ディレクトリを参照。
+
+## 開発スタイル
+
+**ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローン（またはシンボリックリンク）で配置する。
+
+```bash
+git clone <repository-url> projects/your-repo
+```
+
+Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`projects/` 以下のリポジトリも一括で扱える。
 
 ## セットアップ
 
@@ -84,13 +74,27 @@ git clone <repository-url> projects/your-repo
 bash scripts/ntfy.sh "テスト通知"
 ```
 
-## スキル・ルールのインポート
+### 設定ファイル
 
-`--from` で指定したパスから、`.rulesync/` 相当の設定をコピーして取り込む。
+| ファイル | 用途 |
+|----------|------|
+| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `enabled` / `disabled`、未設定時は disabled） |
+| **.env** | MCP サーバーのトークン（任意） |
+| **.rulesync/mcp.json** | MCP サーバー設定（任意） |
 
-**利用シーン**: テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時。
+## コマンドリファレンス
 
-### 実行例
+### rulesync generate
+
+`.rulesync/` の編集正本から各エージェント用設定（`.cursor/`, `.claude/`, `.codex/`）を生成する。
+
+```bash
+rulesync generate
+```
+
+### agent-import
+
+`--from` で指定したパスから、`.rulesync/` 相当の設定をコピーして取り込む。テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時に使用。
 
 ```bash
 cd /path/to/ai-workspace
@@ -111,7 +115,7 @@ cd /path/to/ai-workspace
 ./scripts/agent-import.sh --mcp --from /path/to/source                 # mcp.json.example のみ
 ```
 
-### オプション
+#### オプション
 
 | オプション | 意味 |
 | --- | --- |
@@ -128,8 +132,16 @@ cd /path/to/ai-workspace
 | `--subagents <name>` / `--subagents-all` | サブエージェントを1つ / 全件 |
 | `--mcp` | `mcp.json.example` のみ（認証情報は含まない） |
 
-## 設定ファイル
+### ntfy 通知テスト
 
-- **config/settings.yaml** - ntfy トピック設定、`git_command`（AI の git 実行可否: `enabled` / `disabled`、未設定時は disabled）
-- **.env** - MCP サーバーのトークン（任意）
-- **.rulesync/mcp.json** - MCP サーバー設定（任意）
+```bash
+bash scripts/ntfy.sh "テスト通知"
+```
+
+## トラブルシューティング
+
+### Cursor でコード差分が正しく表示されない
+
+`projects/` 配下にシンボリックリンクを置いた場合、Cursor で AI の変更を承認する際にエディタ上のインライン DIFF が正しく表示されないことがある。
+
+**対処法**: `projects/` 配下のシンボリックリンクを `.code-workspace` ファイルに登録し、そのワークスペースファイルを Cursor で開く（マルチルートワークスペースとして開かれる）。設定例は `ai-workspace.code-workspace.example` を参照。
