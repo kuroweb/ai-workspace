@@ -2,5 +2,4 @@ ntfy:
   server: "https://ntfy.sh"
   topic: "my-topic"
 
-# 未設定時は disabled。AI に git を許可するときは enabled に変更
-git_command: disabled
+git_command: false

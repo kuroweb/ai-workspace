@@ -78,7 +78,7 @@ bash scripts/ntfy.sh "テスト通知"
 
 | ファイル | 用途 |
 |----------|------|
-| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `enabled` / `disabled`、未設定時は disabled） |
+| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `true` / `false`、未設定時は false） |
 | **.env** | MCP サーバーのトークン（任意） |
 | **.rulesync/mcp.json** | MCP サーバー設定（任意） |
 

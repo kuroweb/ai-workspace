@@ -10,15 +10,15 @@ globs: ["**/*"]
 
 ## 基本方針
 
-AI は作業前に `config/settings.yaml` を参照し、`git_command` の値（`enabled` または `disabled`）を確認する。**未設定のときは disabled** とする。
+AI は作業前に `config/settings.yaml` を参照し、`git_command` の値（`true` または `false`）を確認する。**未設定のときは false** とする。
 
-## git_command: disabled の場合
+## git_command: false の場合
 
 **いかなる git コマンドも実行しません。**
 
 ```yaml
 # config/settings.yaml の例
-git_command: disabled
+git_command: false
 ```
 
 ### 禁止事項
@@ -32,7 +32,7 @@ git_command: disabled
 「コミット履歴を見せて」「git log を実行して」等の指示に対し、以下のように応答します。
 
 ```
-このワークスペースは config/settings.yaml で git_command: disabled に設定されているため、
+このワークスペースは config/settings.yaml で git_command: false に設定されているため、
 git コマンドの実行やコミット履歴の表示はできません。
 
 必要であれば、ターミナルで直接実行してください。
@@ -40,11 +40,11 @@ git コマンドの実行やコミット履歴の表示はできません。
 
 ### 例外: ファイル編集は可能
 
-`git_command: disabled` でも、Read / Write / StrReplace / Grep / Glob 等のファイル操作は通常通り実行可能です。
+`git_command: false` でも、Read / Write / StrReplace / Grep / Glob 等のファイル操作は通常通り実行可能です。
 
-## git_command: enabled の場合
+## git_command: true の場合
 
-`git_command: enabled` と明示した場合のみ、git コマンドを実行できます。**未設定のときは disabled 扱い**です。
+`git_command: true` と明示した場合のみ、git コマンドを実行できます。**未設定のときは false 扱い**です。
 
 ## 参照
 
