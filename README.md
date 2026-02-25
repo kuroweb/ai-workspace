@@ -27,7 +27,12 @@ git clone <repository-url> projects/your-repo
 # 4. MCP サーバー設定（任意）
 cp .env.example .env
 # .env にトークン等を設定
-# .rulesync/mcp.json を作成・編集後、rulesync generate で各エージェントに展開
+
+# Claude Code 用 MCP 設定
+cp .mcp.json.example .mcp.json
+
+# Cursor 用 MCP 設定
+cp .cursor/mcp.json.example .cursor/mcp.json
 
 # 5. 通知テスト（任意）
 bash scripts/ntfy.sh "テスト通知"
@@ -39,7 +44,8 @@ bash scripts/ntfy.sh "テスト通知"
 |----------|------|
 | **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `true` / `false`、未設定時は `false`） |
 | **.env** | MCP サーバーの認証情報（任意） |
-| **.rulesync/mcp.json** | MCP サーバー設定（任意、rulesync generate で各エージェントに展開） |
+| **.mcp.json** | Claude Code 用 MCP サーバー設定（`.mcp.json.example` をコピーして使用） |
+| **.cursor/mcp.json** | Cursor 用 MCP サーバー設定（`.cursor/mcp.json.example` をコピーして使用） |
 
 ## 開発スタイル
 
@@ -78,16 +84,18 @@ ai-workspace/
 │   ├── steering/               # プロジェクト全体の方針・ルール（インスタンス固有）
 │   └── specs/                  # 機能仕様・タスク（インスタンス固有）
 ├── .rulesync/                  # AI エージェント設定の編集正本
-│   ├── rules/                  # ルール定義（git 管理）
-│   └── mcp.json                # MCP サーバー設定（git 管理外）
+│   └── rules/                  # ルール定義（git 管理）
 ├── .cursor/                    # Cursor 用設定
 │   ├── commands/kiro/          # Kiro コマンド（git 管理）
 │   ├── rules/                  # ルール（rulesync で生成）
-│   └── mcp.json                # MCP 設定（rulesync で生成）
+│   ├── mcp.json                # MCP 設定（git 管理外、*.example からコピー）
+│   └── mcp.json.example        # MCP 設定サンプル（git 管理）
 ├── .claude/                    # Claude Code 用設定
 │   ├── commands/kiro/          # Kiro コマンド（git 管理）
 │   ├── rules/                  # ルール（rulesync で生成）
 │   └── settings.local.json     # 設定（rulesync で生成）
+├── .mcp.json                   # Claude Code 用 MCP 設定（git 管理外、*.example からコピー）
+├── .mcp.json.example           # Claude Code 用 MCP 設定サンプル（git 管理）
 ├── .codex/                     # Codex CLI 用設定
 │   ├── prompts/kiro-*.md       # Kiro プロンプト（git 管理）
 │   └── memories/               # メモリ（rulesync で生成）

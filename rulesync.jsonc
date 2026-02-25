@@ -6,7 +6,6 @@
   ],
   "features": [
     "rules",
-    "mcp",
     "ignore"
   ],
   "baseDirs": [
