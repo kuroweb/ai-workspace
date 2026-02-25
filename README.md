@@ -1,54 +1,45 @@
 # ai-workspace
 
-AI エージェント設定（rules, skills, subagents, commands, MCP）を一元管理し、複数のエージェント（Cursor, Claude Code, Codex CLI）に展開する基盤リポジトリ。
+複数プロジェクトを横断して開発するためのワークスペース。
 
 ## 概要
 
-このリポジトリは以下を提供する：
+複数のリポジトリを `projects/` 配下に配置し、横断的に開発するためのワークスペースです。
 
-- **AI エージェント設定の一元管理** - `.rulesync/` を編集正本として、複数のエージェント（Cursor, Claude Code, Codex CLI）用設定を自動生成
-- **Kiro (Spec-Driven Development)** - `.kiro/` で仕様駆動開発をサポート（要件 → 設計 → タスク → 実装）
-- **マルチリポジトリ開発** - `projects/` 配下に複数リポジトリを配置し、共通の AI 設定で開発
+- **仕様駆動開発** - `.kiro/` で要件 → 設計 → タスク → 実装の流れをサポート
+- **マルチリポジトリ** - 複数プロジェクトをまたいだ開発が可能
 
-## リポジトリ構成
+## セットアップ
 
-```
-ai-workspace/
-├── config/                     # 設定ファイル
-│   ├── settings.yaml           # ワークスペース設定（git 管理外）
-│   └── settings.yaml.example   # 設定サンプル
-├── projects/                   # 開発対象リポジトリを配置（git 管理外）
-├── .kiro/                      # Kiro (Spec-Driven Development)（git 管理外）
-│   ├── settings/               # Kiro 設定テンプレート（git 管理）
-│   ├── steering/               # プロジェクト全体の方針・ルール（インスタンス固有）
-│   └── specs/                  # 機能仕様・タスク（インスタンス固有）
-├── .rulesync/                  # AI エージェント設定の編集正本
-│   ├── rules/                  # ルール定義（git 管理）
-│   └── mcp.json                # MCP サーバー設定（git 管理外）
-├── .cursor/                    # Cursor 用（rulesync で自動生成）
-│   ├── commands/kiro/          # Kiro コマンド（git 管理・rulesync 管理外）
-│   ├── rules/                  # ルール（rulesync で生成・git 管理外）
-│   └── mcp.json                # MCP 設定（rulesync で生成・git 管理外）
-├── .claude/                    # Claude Code 用（rulesync で自動生成）
-│   ├── commands/kiro/          # Kiro コマンド（git 管理・rulesync 管理外）
-│   ├── rules/                  # ルール（rulesync で生成・git 管理外）
-│   └── settings.local.json     # 設定（rulesync で生成・git 管理外）
-├── .codex/                     # Codex CLI 用（rulesync で自動生成）
-│   ├── prompts/kiro-*.md       # Kiro プロンプト（git 管理・rulesync 管理外）
-│   └── memories/               # メモリ（rulesync で生成・git 管理外）
-├── scripts/                    # ユーティリティスクリプト
-│   ├── agent-import.sh         # 設定インポートスクリプト
-│   └── ntfy.sh                 # 通知スクリプト
-├── AGENTS.md                   # エージェント設定マニフェスト（rulesync で生成・git 管理外）
-├── CLAUDE.md                   # Claude プロジェクト指示（rulesync で生成・git 管理外）
-└── rulesync.jsonc              # rulesync 設定
+```bash
+# 1. クローン
+git clone <repository-url>
+cd ai-workspace
+
+# 2. 設定ファイル作成
+cp config/settings.yaml.example config/settings.yaml
+# ntfy トピックと git_command を編集（任意）
+
+# 3. 開発対象のリポジトリを projects/ 以下に配置（必須）
+git clone <repository-url> projects/your-repo
+# またはシンボリックリンク: ln -s /path/to/your-repo projects/your-repo
+
+# 4. MCP サーバー設定（任意）
+cp .env.example .env
+# .env にトークン等を設定
+# .rulesync/mcp.json を作成・編集後、rulesync generate で各エージェントに展開
+
+# 5. 通知テスト（任意）
+bash scripts/ntfy.sh "テスト通知"
 ```
 
-### 編集正本のルール
+### 設定ファイル
 
-- **`.rulesync/rules/`** が AI エージェントルールの編集正本。変更後は `rulesync generate` で各エージェント用設定（`.cursor/`, `.claude/`, `.codex/`）を展開すること。
-- **Kiro コマンド** (`.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md`) は git 管理しているが、rulesync では管理していない（直接編集可能）。
-- **`.kiro/steering/` と `.kiro/specs/`** はインスタンス固有（ワークスペースと projects の組み合わせごとに異なる）のため git 管理外。
+| ファイル | 用途 |
+|----------|------|
+| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `true` / `false`、未設定時は `false`） |
+| **.env** | MCP サーバーの認証情報（任意） |
+| **.rulesync/mcp.json** | MCP サーバー設定（任意、rulesync generate で各エージェントに展開） |
 
 ## 開発スタイル
 
@@ -74,41 +65,49 @@ Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`pr
 
 詳細は `CLAUDE.md` または各 Kiro コマンドのヘルプを参照。
 
-## セットアップ
+## リポジトリ構成
 
-```bash
-# 1. クローン
-git clone <repository-url>
-cd ai-workspace
-
-# 2. 設定ファイル作成
-cp config/settings.yaml.example config/settings.yaml
-# ntfy トピックと git_command を編集（任意）
-
-# 3. エージェント設定の生成
-brew install rulesync
-rulesync generate
-
-# 4. 開発対象のリポジトリを projects/ 以下に配置（必須）
-git clone <repository-url> projects/your-repo
-# またはシンボリックリンク: ln -s /path/to/your-repo projects/your-repo
-
-# 5. MCP サーバー設定（任意）
-cp .env.example .env
-# .env にトークン等を設定
-# .rulesync/mcp.json を作成・編集後、rulesync generate で各エージェントに展開
-
-# 6. 通知テスト（任意）
-bash scripts/ntfy.sh "テスト通知"
+```
+ai-workspace/
+├── config/                     # 設定ファイル
+│   ├── settings.yaml           # ワークスペース設定（git 管理外）
+│   └── settings.yaml.example   # 設定サンプル
+├── projects/                   # 開発対象リポジトリを配置（git 管理外）
+├── .kiro/                      # Kiro (Spec-Driven Development)（git 管理外）
+│   ├── settings/               # Kiro 設定テンプレート（git 管理）
+│   ├── steering/               # プロジェクト全体の方針・ルール（インスタンス固有）
+│   └── specs/                  # 機能仕様・タスク（インスタンス固有）
+├── .rulesync/                  # AI エージェント設定の編集正本
+│   ├── rules/                  # ルール定義（git 管理）
+│   └── mcp.json                # MCP サーバー設定（git 管理外）
+├── .cursor/                    # Cursor 用設定
+│   ├── commands/kiro/          # Kiro コマンド（git 管理）
+│   ├── rules/                  # ルール（rulesync で生成）
+│   └── mcp.json                # MCP 設定（rulesync で生成）
+├── .claude/                    # Claude Code 用設定
+│   ├── commands/kiro/          # Kiro コマンド（git 管理）
+│   ├── rules/                  # ルール（rulesync で生成）
+│   └── settings.local.json     # 設定（rulesync で生成）
+├── .codex/                     # Codex CLI 用設定
+│   ├── prompts/kiro-*.md       # Kiro プロンプト（git 管理）
+│   └── memories/               # メモリ（rulesync で生成）
+├── scripts/                    # ユーティリティスクリプト
+│   ├── agent-import.sh         # 設定インポートスクリプト
+│   └── ntfy.sh                 # 通知スクリプト
+├── AGENTS.md                   # エージェント設定マニフェスト（rulesync で生成・git 管理外）
+├── CLAUDE.md                   # Claude プロジェクト指示（rulesync で生成・git 管理外）
+└── rulesync.jsonc              # rulesync 設定
 ```
 
-### 設定ファイル
+## AI エージェント設定
 
-| ファイル | 用途 |
-|----------|------|
-| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `true` / `false`、未設定時は `false`） |
-| **.env** | MCP サーバーの認証情報（任意） |
-| **.rulesync/mcp.json** | MCP サーバー設定（任意、rulesync generate で各エージェントに展開） |
+AI エージェント設定は `.rulesync/` で管理し、`rulesync generate` で各エージェント（`.cursor/`, `.claude/`, `.codex/`）用に展開します。
+
+- **編集正本**: `.rulesync/rules/` で管理
+- **生成コマンド**: `rulesync generate`
+- **詳細**: `rulesync.jsonc` を参照
+
+**注意**: Kiro コマンド（`.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md`）は rulesync で管理していません（直接編集可能）。
 
 ## コマンドリファレンス
 

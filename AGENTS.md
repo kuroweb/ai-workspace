@@ -11,7 +11,7 @@ As this project's AI coding tool, you must follow the additional conventions bel
 
 # ai-workspace 概要
 
-複数リポジトリへ共通の AI 設定を適用するワークスペース。
+複数プロジェクト横断で開発するためのワークスペース。
 
 - **開発対象リポジトリ**: `projects/` 配下に配置（シンボリックリンクまたはクローン）
 - **設定管理**: `config/settings.yaml` を参照
