@@ -1,19 +1,7 @@
 # workspace config files
 config/settings.yaml
-.rulesync/mcp.json
-
-# rulesync generated files
-AGENTS.md
-CLAUDE.md
+mcp.json
 .mcp.json
-.claude
-.cursor
-.codex
-
-# kiro commands (exception to rulesync generated files)
-!.claude/commands/kiro/
-!.cursor/commands/kiro/
-!.codex/prompts/kiro-*.md
 
 # kiro instance-specific (workspace名・projects の組み合わせごとに異なるためローカルのみ)
 .kiro/steering/

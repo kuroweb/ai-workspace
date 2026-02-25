@@ -5,7 +5,9 @@
     "codexcli"
   ],
   "features": [
-    "rules","skills","mcp","subagents","commands"
+    "rules",
+    "mcp",
+    "ignore"
   ],
   "baseDirs": [
     "."
