@@ -1,14 +1,32 @@
 # ai-workspace 概要
 
-Kiro-style Spec Driven Development（`.kiro/specs/` 単位の要件→設計→タスク→実装）を軸に、複数リポジトリへ共通の AI 設定を適用するワークスペース。
+複数リポジトリへ共通の AI 設定を適用するワークスペース。
 
-- **開発対象リポジトリ**: `projects/` 配下に配置（シンボリックリンクまたはクローン）。このワークスペースをルートに、各リポジトリへ共通の AI 設定を適用して開発する。
-- **編集正本**: `.rulesync/` が編集正本。`rulesync generate` で `.cursor/`, `.claude/`, `.codex/` に展開される。
-- **Kiro コマンド**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md` は git 管理しているが、rulesync では管理していない（直接編集可能）。
-- **スキル**: `.rulesync/skills/` で管理。`rulesync generate` で各エージェント用に展開される。
-- **設定**: `config/settings.yaml` を参照。
+- **開発対象リポジトリ**: `projects/` 配下に配置（シンボリックリンクまたはクローン）
+- **設定管理**: `config/settings.yaml` を参照
 
-このファイルは `.rulesync/rules/overview.md` が正本です。Claude Code 用のルールは `rulesync generate` で `.claude/` に生成されます。
+## 複数プロジェクト開発
+
+このワークスペースは **Cursor のマルチルートワークスペースのような複数プロジェクト開発** を意図しています。
+
+- **プロジェクト配置**: `projects/` 配下に複数のリポジトリを配置
+  - シンボリックリンクまたはクローンで配置
+  - 例: `projects/app-frontend/`, `projects/api-backend/`, `projects/shared-lib/`
+- **共通AI設定**: すべてのプロジェクトに対して統一された AI エージェント設定（`.cursor/`, `.claude/`, `.codex/`）が適用される
+- **横断的開発**: プロジェクト間を横断した機能開発・リファクタリングが可能
+- **統合管理**: ワークスペースレベルで Kiro Spec、Steering、ルール、スキルを一元管理
+
+各プロジェクトは独立したリポジトリとして git 管理されつつ、AI 開発環境は ai-workspace で統一されます。
+
+## rulesync
+
+このワークスペースは **rulesync** を使用して AI エージェント設定を管理しています。
+
+- **編集正本**: `.rulesync/` で管理
+- **生成先**: `.cursor/`, `.claude/`, `.codex/`
+- **コマンド**: `rulesync generate` で各エージェントディレクトリに展開
+
+詳細な管理対象は `rulesync.jsonc` を参照してください。
 
 # AI-DLC and Spec-Driven Development
 
