@@ -4,7 +4,7 @@
 
 ## 概要
 
-複数のリポジトリを `projects/` 配下に配置し、横断的に開発するためのワークスペースです。
+複数のリポジトリを `projects/` 配下に配置し、横断的に開発するためのワークスペース。
 
 - **仕様駆動開発** - `.kiro/` で要件 → 設計 → タスク → 実装の流れをサポート
 - **マルチリポジトリ** - 複数プロジェクトをまたいだ開発が可能
@@ -18,11 +18,9 @@ cd ai-workspace
 
 # 2. 設定ファイル作成
 cp config/settings.yaml.example config/settings.yaml
-# ntfy トピックと git_command を編集（任意）
 
 # 3. 開発対象のリポジトリを projects/ 以下に配置（必須）
 git clone <repository-url> projects/your-repo
-# またはシンボリックリンク: ln -s /path/to/your-repo projects/your-repo
 
 # 4. MCP サーバー設定（任意）
 cp .env.example .env
@@ -49,14 +47,10 @@ bash scripts/ntfy.sh "テスト通知"
 
 ## 開発スタイル
 
-**ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローン（またはシンボリックリンク）で配置する。
+**ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローンで配置する。
 
 ```bash
-# クローンする場合
 git clone <repository-url> projects/your-repo
-
-# シンボリックリンクする場合
-ln -s /path/to/your-repo projects/your-repo
 ```
 
 Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`projects/` 以下のリポジトリも一括で扱える。
@@ -83,8 +77,10 @@ ai-workspace/
 │   ├── settings/               # Kiro 設定テンプレート（git 管理）
 │   ├── steering/               # プロジェクト全体の方針・ルール（インスタンス固有）
 │   └── specs/                  # 機能仕様・タスク（インスタンス固有）
-├── .rulesync/                  # AI エージェント設定の編集正本
-│   └── rules/                  # ルール定義（git 管理）
+├── .rulesync/                  # rules / skills / subagents の編集正本
+│   ├── rules/                  # ルール定義（git 管理）
+│   ├── skills/                 # スキル定義（git 管理）
+│   └── subagents/              # サブエージェント定義（git 管理）
 ├── .cursor/                    # Cursor 用設定
 │   ├── commands/kiro/          # Kiro コマンド（git 管理）
 │   ├── rules/                  # ルール（rulesync で生成）
@@ -109,13 +105,13 @@ ai-workspace/
 
 ## AI エージェント設定
 
-AI エージェント設定は `.rulesync/` で管理し、`rulesync generate` で各エージェント（`.cursor/`, `.claude/`, `.codex/`）用に展開します。
+**rules / skills / subagents** は `.rulesync/` で一元管理し、`rulesync generate` で各エージェント（`.cursor/`, `.claude/`, `.codex/`）用に展開する。
 
-- **編集正本**: `.rulesync/rules/` で管理
+- **編集正本**: `.rulesync/rules/`, `.rulesync/skills/`, `.rulesync/subagents/`
 - **生成コマンド**: `rulesync generate`
 - **詳細**: `rulesync.jsonc` を参照
 
-**注意**: Kiro コマンド（`.cursor/commands/kiro/`, `.claude/commands/kiro/`, `.codex/prompts/kiro-*.md`）は rulesync で管理していません（直接編集可能）。
+その他の設定（MCP、Kiro コマンド等）は各エージェントのディレクトリを直接編集して個別に管理する。
 
 ## コマンドリファレンス
 
@@ -144,17 +140,16 @@ cd /path/to/ai-workspace
 一部だけ取り込みたい場合は、`--skills` / `--rules` / `--subagents` で対象を指定する。
 
 ```bash
-./scripts/agent-import.sh --skills plan --from /path/to/source   # スキル1つだけ
-./scripts/agent-import.sh --skills-all --from /path/to/source            # スキル全件
-./scripts/agent-import.sh --rules-all --from /path/to/source             # ルール全件
-./scripts/agent-import.sh --mcp --from /path/to/source                 # mcp.json.example のみ
+./scripts/agent-import.sh --skills plan --from /path/to/source  # スキル1つだけ
+./scripts/agent-import.sh --skills-all --from /path/to/source   # スキル全件
+./scripts/agent-import.sh --rules-all --from /path/to/source    # ルール全件
 ```
 
 #### オプション
 
 | オプション | 意味 |
 | --- | --- |
-| `--all` | skills, rules, subagents, mcp を全て取り込む |
+| `--all` | skills, rules, subagents を全て取り込む |
 | `--force` | 既存ファイルを上書きする（省略時はスキップ） |
 | `--from <path>` | コピー元（ワークスペースルートか `.rulesync` のパス） |
 
@@ -165,18 +160,9 @@ cd /path/to/ai-workspace
 | `--skills <name>` / `--skills-all` | スキルを1つ / 全件 |
 | `--rules <name>` / `--rules-all` | ルールを1つ / 全件 |
 | `--subagents <name>` / `--subagents-all` | サブエージェントを1つ / 全件 |
-| `--mcp` | `mcp.json.example` のみ（認証情報は含まない） |
 
 ### ntfy 通知テスト
 
 ```bash
 bash scripts/ntfy.sh "テスト通知"
 ```
-
-## トラブルシューティング
-
-### Cursor でコード差分が正しく表示されない
-
-`projects/` 配下にシンボリックリンクを置いた場合、Cursor で AI の変更を承認する際にエディタ上のインライン DIFF が正しく表示されないことがある。
-
-**対処法**: `projects/` 配下のシンボリックリンクを `.code-workspace` ファイルに登録し、そのワークスペースファイルを Cursor で開く（マルチルートワークスペースとして開かれる）。設定例は `ai-workspace.code-workspace.example` を参照。

@@ -61,10 +61,6 @@ while [[ $# -gt 0 ]]; do
       TYPE="subagents-all"
       shift 1
       ;;
-    --mcp)
-      TYPE="mcp"
-      shift 1
-      ;;
     --all)
       TYPE="all"
       shift 1
@@ -86,10 +82,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-TYPE_OPTS="--skills / --skills-all / --rules / --rules-all / --subagents / --subagents-all / --mcp / --all"
+TYPE_OPTS="--skills / --skills-all / --rules / --rules-all / --subagents / --subagents-all / --all"
 [[ -z "$TYPE" ]] && usage "${TYPE_OPTS} のいずれかを指定してください"
 
-NO_NAME="mcp all skills-all rules-all subagents-all"
+NO_NAME="all skills-all rules-all subagents-all"
 [[ -z "$NAME" && " $NO_NAME " != *" $TYPE "* ]] && usage "--skills/--rules/--subagents に名前を指定してください"
 [[ -z "$FROM_RULESYNC" ]] && usage "--from を指定してください"
 
@@ -185,25 +181,6 @@ do_subagent() {
   echo "✅ サブエージェントをインポートしました: $name → $dest"
 }
 
-do_mcp() {
-  local src="${FROM_RULESYNC}/mcp.json.example"
-  local dest="$RULESYNC/mcp.json.example"
-  [[ ! -f "$src" ]] && usage "ソースが見つかりません: $src"
-  local src_abs dest_abs
-  src_abs="$(cd -P "$(dirname "$src")" 2>/dev/null && pwd)/$(basename "$src")"
-  dest_abs="$(cd -P "$(dirname "$dest")" 2>/dev/null && pwd)/$(basename "$dest")"
-  if [[ "$src_abs" == "$dest_abs" ]]; then
-    echo "⏭️  同一ファイルのためスキップ: $dest"
-    return 0
-  fi
-  if [[ -z "$FORCE" && -f "$dest" ]]; then
-    echo "⏭️  スキップ（既存）: $dest"
-    return 0
-  fi
-  cp -f "$src" "$dest"
-  echo "✅ MCP設定をインポートしました: mcp.json.example → $dest"
-}
-
 run_all_skills() {
   shopt -s nullglob
   for path in "${FROM_RULESYNC}"/skills/*/; do
@@ -262,15 +239,10 @@ case "$TYPE" in
     [[ ! -d "${FROM_RULESYNC}/subagents" ]] && usage "コピー元に subagents がありません: $FROM_RULESYNC"
     run_all_subagents
     ;;
-  mcp)
-    [[ ! -f "${FROM_RULESYNC}/mcp.json.example" ]] && usage "ソースが見つかりません: ${FROM_RULESYNC}/mcp.json.example"
-    do_mcp
-    ;;
   all)
     [[ -d "${FROM_RULESYNC}/skills" ]] && run_all_skills
     [[ -d "${FROM_RULESYNC}/rules" ]] && run_all_rules
     [[ -d "${FROM_RULESYNC}/subagents" ]] && run_all_subagents
-    [[ -f "${FROM_RULESYNC}/mcp.json.example" ]] && do_mcp
     ;;
   *)
     usage "無効な種別: $TYPE"
