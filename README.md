@@ -1,13 +1,10 @@
 # ai-workspace
 
-複数プロジェクトを横断して開発するためのワークスペース。
+マルチプロジェクト開発用ワークスペース。
 
-## 概要
-
-複数のリポジトリを `projects/` 配下に配置し、横断的に開発するためのワークスペース。
-
-- **仕様駆動開発** - `.kiro/` で要件 → 設計 → タスク → 実装の流れをサポート
-- **マルチリポジトリ** - 複数プロジェクトをまたいだ開発が可能
+- **Claude Code**: `projects/` 配下に複数のリポジトリをクローンして横断的に開発
+- **Cursor**: `ai-workspace.code-workspace` をマルチルートワークスペースとして開いて横断的に開発
+- **仕様駆動開発**: `.kiro/` で要件 → 設計 → タスク → 実装の流れをサポート
 
 ## セットアップ
 
@@ -47,13 +44,21 @@ bash scripts/ntfy.sh "テスト通知"
 
 ## 開発スタイル
 
+### Claude Code
+
 **ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローンで配置する。
 
 ```bash
 git clone <repository-url> projects/your-repo
 ```
 
-Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`projects/` 以下のリポジトリも一括で扱える。
+### Cursor
+
+**`ai-workspace.code-workspace`** をワークスペースファイルとして開く。プロジェクトを追加する場合は `folders` に追記する。
+
+```bash
+cursor ai-workspace.code-workspace
+```
 
 ### Kiro を使った開発フロー
 
@@ -62,8 +67,6 @@ Cursor / VSCode で **ai-workspace のルートフォルダ** を開けば、`pr
 3. **要件・設計・タスク** - `/kiro:spec-requirements`, `/kiro:spec-design`, `/kiro:spec-tasks` で段階的に定義
 4. **実装** - `/kiro:spec-impl` で TDD ベースの実装
 5. **進捗確認** - `/kiro:spec-status` でステータス確認
-
-詳細は `CLAUDE.md` または各 Kiro コマンドのヘルプを参照。
 
 ## リポジトリ構成
 
@@ -100,18 +103,33 @@ ai-workspace/
 │   └── ntfy.sh                 # 通知スクリプト
 ├── AGENTS.md                   # エージェント設定マニフェスト（rulesync で生成・git 管理外）
 ├── CLAUDE.md                   # Claude プロジェクト指示（rulesync で生成・git 管理外）
+├── ai-workspace.code-workspace # Cursor 用マルチルートワークスペース設定（git 管理）
 └── rulesync.jsonc              # rulesync 設定
 ```
 
 ## AI エージェント設定
 
-**rules / skills / subagents** は `.rulesync/` で一元管理し、`rulesync generate` で各エージェント（`.cursor/`, `.claude/`, `.codex/`）用に展開する。
+### rulesync で共通管理
 
-- **編集正本**: `.rulesync/rules/`, `.rulesync/skills/`, `.rulesync/subagents/`
-- **生成コマンド**: `rulesync generate`
-- **詳細**: `rulesync.jsonc` を参照
+`.rulesync/` で編集し、`rulesync generate` で各エージェント向けに展開する。
 
-その他の設定（MCP、Kiro コマンド等）は各エージェントのディレクトリを直接編集して個別に管理する。
+| 編集正本 | 生成先 |
+| --- | --- |
+| `.rulesync/rules/` | `.cursor/rules` / `.claude/rules` / `.codex/memories` |
+| `.rulesync/rules/overview.md` | `.cursor/rules/overview.mdc` / `CLAUDE.md` / `AGENTS.md` |
+| `.rulesync/skills/` | `.cursor/skills` / `.claude/skills` / `.codex/skills` |
+| `.rulesync/subagents` | `.cursor/subagents` / `.claude/subagents` / `.codex/subagents` |
+
+詳細は `rulesync.jsonc` を参照。
+
+### 個別管理
+
+各エージェントのディレクトリを直接編集する。
+
+| 項目 | パス |
+| --- | --- |
+| MCP 設定 | `.mcp.json`, `.cursor/mcp.json` |
+| Kiro コマンド | `.cursor/commands/kiro/`, `.claude/commands/kiro/` |
 
 ## コマンドリファレンス
 
@@ -125,7 +143,7 @@ rulesync generate
 
 ### agent-import
 
-`--from` で指定したパスから、`.rulesync/` 相当の設定をコピーして取り込む。テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時に使用。
+`--from` で指定したパスから `.rulesync/` 相当の設定をコピーして取り込む。テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時に使用。
 
 ```bash
 cd /path/to/ai-workspace
@@ -137,7 +155,7 @@ cd /path/to/ai-workspace
 ./scripts/agent-import.sh --all --force --from /path/to/source
 ```
 
-一部だけ取り込みたい場合は、`--skills` / `--rules` / `--subagents` で対象を指定する。
+一部だけ取り込む場合は `--skills` / `--rules` / `--subagents` で対象を指定する。
 
 ```bash
 ./scripts/agent-import.sh --skills plan --from /path/to/source  # スキル1つだけ

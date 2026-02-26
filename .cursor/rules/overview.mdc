@@ -3,35 +3,44 @@ description: ai-workspace のプロジェクト概要と開発ルール
 globs: **/*
 ---
 
+# 大前提
+
+- 日本語でやりとりすること
+
+# 基本原則
+
+- シンプルさの優先: すべての変更を可能な限りシンプルに保ち、コードへの影響範囲を最小限に抑える。
+- 妥協の排除: 根本原因を特定すること。一時しのぎの修正は行わず、シニア開発者としての基準を維持する。
+- 影響の最小化: 必要な箇所のみを変更し、新たなバグの混入を徹底的に防ぐ。
+
 # ai-workspace 概要
 
-複数プロジェクト横断で開発するためのワークスペース。
+マルチプロジェクト開発用ワークスペース。
 
-- **開発対象リポジトリ**: `projects/` 配下に配置（シンボリックリンクまたはクローン）
-- **設定管理**: `config/settings.yaml` を参照
+- **Claude Code**: `projects/` 配下に複数のリポジトリをクローンして横断的に開発
+- **Cursor**: `ai-workspace.code-workspace` をマルチルートワークスペースとして開いて横断的に開発
 
-## 複数プロジェクト開発
+## AI エージェント設定
 
-このワークスペースは **Cursor のマルチルートワークスペースのような複数プロジェクト開発** を意図しています。
+### rulesync で共通管理
 
-- **プロジェクト配置**: `projects/` 配下に複数のリポジトリを配置
-  - シンボリックリンクまたはクローンで配置
-  - 例: `projects/app-frontend/`, `projects/api-backend/`, `projects/shared-lib/`
-- **共通AI設定**: すべてのプロジェクトに対して統一された AI エージェント設定（`.cursor/`, `.claude/`, `.codex/`）が適用される
-- **横断的開発**: プロジェクト間を横断した機能開発・リファクタリングが可能
-- **統合管理**: ワークスペースレベルで Kiro Spec、Steering、ルール、スキルを一元管理
+`.rulesync/` で編集し、`rulesync generate` で各エージェント向けに展開する。
 
-各プロジェクトは独立したリポジトリとして git 管理されつつ、AI 開発環境は ai-workspace で統一されます。
+| 編集正本 | 生成先 |
+| --- | --- |
+| `.rulesync/rules/` | `.cursor/rules` / `.claude/rules` / `.codex/memories` |
+| `.rulesync/rules/overview.md` | `.cursor/rules/overview.mdc` / `CLAUDE.md` / `AGENTS.md` |
+| `.rulesync/skills/` | `.cursor/skills` / `.claude/skills` / `.codex/skills` |
+| `.rulesync/subagents` | `.cursor/subagents` / `.claude/subagents` / `.codex/subagents` |
 
-## rulesync
+詳細は `rulesync.jsonc` を参照。
 
-このワークスペースは **rulesync** を使用して AI エージェント設定を管理しています。
+### 個別管理
 
-- **編集正本**: `.rulesync/` で管理
-- **生成先**: `.cursor/`, `.claude/`, `.codex/`
-- **コマンド**: `rulesync generate` で各エージェントディレクトリに展開
+各エージェントのディレクトリを直接編集する。
 
-詳細な管理対象は `rulesync.jsonc` を参照してください。
+- **MCP 設定**: `.mcp.json`, `.cursor/mcp.json`
+- **Kiro コマンド**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`
 
 # AI-DLC and Spec-Driven Development
 
@@ -87,12 +96,15 @@ Kiro-style Spec Driven Development implementation on AI-DLC (AI Development Life
 
 ### Projects Analysis (CRITICAL)
 
-When running `/kiro:steering` (Bootstrap or Sync mode), you MUST analyze `projects/` subdirectories:
+When running `/kiro:steering` (Bootstrap or Sync mode), you MUST analyze the target projects:
+
+- **Claude Code**: analyze subdirectories under `projects/`
+- **Cursor**: analyze folders listed in `ai-workspace.code-workspace`
 
 **Bootstrap Mode**:
 
-1. Check if `projects/` exists and contains subdirectories (symlinks or clones)
-2. For each project in `projects/`:
+1. Identify target projects from the appropriate source above
+2. For each project:
    - Read `README.md` and project overview documentation
    - Identify tech stack (language, framework, runtime)
    - Extract architecture patterns (layered, feature-first, DDD, etc.)
@@ -104,7 +116,7 @@ When running `/kiro:steering` (Bootstrap or Sync mode), you MUST analyze `projec
 
 **Sync Mode**:
 
-- Check if new projects added to `projects/`
+- Check if new projects added
 - Verify existing steering reflects current project patterns
 - Report drift if projects diverged from steering
 
