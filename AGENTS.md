@@ -5,10 +5,6 @@ rules[1]:
     description: config/settings.yaml の git_command に基づく git コマンド実行制限
     applyTo[1]: **/*
 
-# Additional Conventions Beyond the Built-in Functions
-
-As this project's AI coding tool, you must follow the additional conventions below, in addition to the built-in functions.
-
 # 大前提
 
 - 日本語でやりとりすること
@@ -23,8 +19,9 @@ As this project's AI coding tool, you must follow the additional conventions bel
 
 マルチプロジェクト開発用ワークスペース。
 
-- **Claude Code**: `projects/` 配下に複数のリポジトリをクローンして横断的に開発
 - **Cursor**: `ai-workspace.code-workspace` をマルチルートワークスペースとして開いて横断的に開発
+- **Claude Code**: `projects/` 配下に複数のリポジトリをクローンして横断的に開発
+- **Codex**: `ai-workspace` をルートに開き、`projects/` 配下の複数リポジトリを横断的に開発
 
 ## AI エージェント設定
 
@@ -32,12 +29,12 @@ As this project's AI coding tool, you must follow the additional conventions bel
 
 `.rulesync/` で編集し、`rulesync generate` で各エージェント向けに展開する。
 
-| 編集正本 | 生成先 |
-| --- | --- |
-| `.rulesync/rules/` | `.cursor/rules` / `.claude/rules` / `.codex/memories` |
-| `.rulesync/rules/overview.md` | `.cursor/rules/overview.mdc` / `CLAUDE.md` / `AGENTS.md` |
-| `.rulesync/skills/` | `.cursor/skills` / `.claude/skills` / `.codex/skills` |
-| `.rulesync/subagents` | `.cursor/subagents` / `.claude/subagents` / `.codex/subagents` |
+| 編集正本 | Cursor | Claude Code | Codex |
+| --- | --- | --- | --- |
+| `.rulesync/rules/` | `.cursor/rules` | `.claude/rules` | `.codex/memories` |
+| `.rulesync/rules/overview.md` | `.cursor/rules/overview.mdc` | `CLAUDE.md` | `AGENTS.md` |
+| `.rulesync/skills/` | `.cursor/skills` | `.claude/skills` | `.codex/skills` |
+| `.rulesync/subagents` | `.cursor/subagents` | `.claude/subagents` | `.codex/subagents` |
 
 詳細は `rulesync.jsonc` を参照。
 
@@ -45,8 +42,10 @@ As this project's AI coding tool, you must follow the additional conventions bel
 
 各エージェントのディレクトリを直接編集する。
 
-- **MCP 設定**: `.mcp.json`, `.cursor/mcp.json`
-- **Kiro コマンド**: `.cursor/commands/kiro/`, `.claude/commands/kiro/`
+| 項目 | Cursor | Claude Code | Codex |
+| --- | --- | --- | --- |
+| MCP 設定 | `.cursor/mcp.json` | `.mcp.json` | - |
+| Kiro コマンド | `.cursor/commands/kiro/` | `.claude/commands/kiro/` | `.codex/prompts/` |
 
 # AI-DLC and Spec-Driven Development
 
