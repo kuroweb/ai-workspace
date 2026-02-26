@@ -11,6 +11,10 @@ mcp.json
 projects/*
 !projects/.keep
 
+# issues
+issues/*
+!issues/.keep
+
 # environment variables
 .env
 
