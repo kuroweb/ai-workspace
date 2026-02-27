@@ -1,0 +1,38 @@
+# env
+.env
+
+# others
+.git/
+
+# .claude
+.claude/settings.local.json
+.mcp.json
+.mcp.json.example
+
+# .codex
+
+# .cursor
+.cursor/mcp.json
+.cursor/mcp.json.example
+
+# .kiro
+.kiro/steering/
+.kiro/specs/
+
+# .rulesync
+
+# config
+config/settings.yaml
+
+# issues
+issues/
+
+# projects
+projects/
+
+# scripts
+scripts/backup/
+.syncignore
+
+# workspace
+ai-workspace.code-workspace

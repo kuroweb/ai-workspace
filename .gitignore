@@ -1,4 +1,5 @@
 # workspace config files
+.claude/settings.local.json
 config/settings.yaml
 mcp.json
 .mcp.json
