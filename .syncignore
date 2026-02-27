@@ -2,6 +2,7 @@
 .env
 
 # others
+.DS_Store
 .git/
 
 # .claude
