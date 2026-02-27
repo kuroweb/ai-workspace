@@ -142,44 +142,6 @@ ai-workspace/
 rulesync generate
 ```
 
-### agent-import
-
-`--from` で指定したパスから `.rulesync/` 相当の設定をコピーして取り込む。テンプレートやチーム共有の設定を流用するとき、別環境へのセットアップ時に使用。
-
-```bash
-cd /path/to/ai-workspace
-
-# 全てを一括で取り込む（既存はスキップ）
-./scripts/agent-import.sh --all --from /path/to/source
-
-# 上書きする場合
-./scripts/agent-import.sh --all --force --from /path/to/source
-```
-
-一部だけ取り込む場合は `--skills` / `--rules` / `--subagents` で対象を指定する。
-
-```bash
-./scripts/agent-import.sh --skills plan --from /path/to/source  # スキル1つだけ
-./scripts/agent-import.sh --skills-all --from /path/to/source   # スキル全件
-./scripts/agent-import.sh --rules-all --from /path/to/source    # ルール全件
-```
-
-#### オプション
-
-| オプション | 意味 |
-| --- | --- |
-| `--all` | skills, rules, subagents を全て取り込む |
-| `--force` | 既存ファイルを上書きする（省略時はスキップ） |
-| `--from <path>` | コピー元（ワークスペースルートか `.rulesync` のパス） |
-
-**一部だけ取り込む場合**（`--all` の代わりに以下を指定）:
-
-| オプション | 意味 |
-| --- | --- |
-| `--skills <name>` / `--skills-all` | スキルを1つ / 全件 |
-| `--rules <name>` / `--rules-all` | ルールを1つ / 全件 |
-| `--subagents <name>` / `--subagents-all` | サブエージェントを1つ / 全件 |
-
 ### ntfy 通知テスト
 
 ```bash
