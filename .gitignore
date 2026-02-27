@@ -1,29 +1,39 @@
-# workspace config files
-.claude/settings.local.json
-config/settings.yaml
-mcp.json
-.mcp.json
-
-# kiro instance-specific (workspace名・projects の組み合わせごとに異なるためローカルのみ)
-.kiro/steering/
-.kiro/specs/
-
-# projects
-projects/*
-!projects/.keep
-
-# issues
-issues/*
-!issues/.keep
-
-# environment variables
+# env
 .env
 
 # others
 .DS_Store
 
-# Workspace
-*.code-workspace
+# .claude
+.claude/settings.local.json
+.mcp.json
+.mcp.json.example
 
-# vscode
-.vscode/settings.json
+# .codex
+
+# .cursor
+.cursor/mcp.json
+.cursor/mcp.json.example
+
+# .kiro
+.kiro/steering/
+.kiro/specs/
+
+# .rulesync
+
+# config
+config/settings.yaml
+
+# issues
+issues/
+!issues/.keep
+
+# projects
+projects/
+!projects/.keep
+
+# scripts
+scripts/backup/
+
+# workspace
+*.code-workspace
