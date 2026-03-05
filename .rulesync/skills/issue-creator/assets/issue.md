@@ -3,7 +3,7 @@
 - **Status:** open
 - **Created:** YYYY-MM-DD
 - **Category:** （タスク | メモ | 調査 | 設計）
-- **target:** （ヒアリングで確認）
+- **target:** （対象プロジェクト・ヒアリングで確認）
 
 ## 概要
 
