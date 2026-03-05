@@ -7,17 +7,15 @@
 # .claude
 .claude/settings.local.json
 .mcp.json
-.mcp.json.example
 
 # .codex
 
 # .cursor
 .cursor/mcp.json
-.cursor/mcp.json.example
 
 # .kiro
-.kiro/steering/
-.kiro/specs/
+.kiro/steering/*
+.kiro/specs/*
 
 # .rulesync
 
@@ -25,15 +23,15 @@
 config/settings.yaml
 
 # issues
-issues/
-!issues/.keep
+issues/draft/*
+!issues/draft/.keep
 
 # projects
-projects/
+projects/*
 !projects/.keep
 
 # scripts
-scripts/backup/
+scripts/backup/*
 
 # workspace
 *.code-workspace
