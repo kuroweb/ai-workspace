@@ -42,16 +42,19 @@
 ## 実装前確定事項（確定）
 
 1. Claude 方言（`claude -p`）
+
 - 承認要求は Claude 実行時の承認チャネルイベントを `ApprovalRequest` に正規化して扱う。
 - 承認応答はアダプタの `respondApproval(requestId, decision, inputText?)` から Claude 側承認チャネルへ返す。
 - Bot/Service 層は Claude 固有の入出力形式を扱わない。
 
-2. Codex 方言（`codex exec --json`）
+1. Codex 方言（`codex exec --json`）
+
 - 承認要求は Codex の JSON イベントを `ApprovalRequest` に正規化して扱う。
 - 承認応答はアダプタの `respondApproval(requestId, decision, inputText?)` から Codex 側承認チャネルへ返す。
 - Bot/Service 層は Codex 固有の入出力形式を扱わない。
 
-3. timeout / 中断時の最終動作
+1. timeout / 中断時の最終動作
+
 - timeout は `deny` を自動送信して pending を破棄する。
 - `!reset` / 新規 revision による中断時も `deny` を送信して pending を破棄する。
 - 反映失敗時はセッション失敗としてユーザーへ通知し、pending を破棄する。
