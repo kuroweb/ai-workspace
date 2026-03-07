@@ -2,7 +2,8 @@
   "targets": [
     "cursor",
     "claudecode",
-    "codexcli"
+    "codexcli",
+    "geminicli"
   ],
   "features": [
     "rules",

@@ -1,3 +1,14 @@
+Please also reference the following rules as needed. The list below is provided in TOON format, and `@` stands for the project root directory.
+
+rules[1]:
+  - path: @.gemini/memories/git-command.md
+    description: config/settings.yaml の git_command に基づく git コマンド実行制限
+    applyTo[1]: **/*
+
+# Additional Conventions Beyond the Built-in Functions
+
+As this project's AI coding tool, you must follow the additional conventions below, in addition to the built-in functions.
+
 # 大前提
 
 - 日本語でやりとりすること

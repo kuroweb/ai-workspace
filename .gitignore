@@ -13,6 +13,9 @@
 # .cursor
 .cursor/mcp.json
 
+# .gemini
+.gemini/settings.json
+
 # .kiro
 .kiro/steering/*
 .kiro/specs/*
