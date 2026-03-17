@@ -25,10 +25,6 @@
 # config
 config/settings.yaml
 
-# issues
-issues/draft/*
-!issues/draft/.keep
-
 # projects
 projects/*
 !projects/.keep
