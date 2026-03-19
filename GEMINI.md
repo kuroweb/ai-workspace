@@ -24,7 +24,7 @@ As this project's AI coding tool, you must follow the additional conventions bel
 マルチプロジェクト開発用ワークスペース。
 
 - **Cursor**: `ai-workspace.code-workspace` をマルチルートワークスペースとして開いて横断的に開発
-- **Claude Code, Gemini CLI, Codex**: `ai-workspace` をルートに開き、`projects/` 配下の複数リポジトリを横断的に開発
+- **Claude Code, Gemini CLI, Codex**: `ai-workspace` をルートに開き、`projects/` 配下の複数リポジトリ（クローン or symlink）を横断的に開発
 
 ```bash
 # Claude Code

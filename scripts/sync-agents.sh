@@ -48,7 +48,7 @@ echo ""
 if [ -z "$DRY_RUN" ]; then
   echo "バックアップ: $BACKUP_DIR"
   mkdir -p "$BACKUP_DIR"
-  cp -R "$PROJECT_ROOT" "$BACKUP_DIR"
+  rsync -a --exclude='scripts/backup' "$PROJECT_ROOT/" "$BACKUP_DIR/"
   echo ""
 fi
 

@@ -16,14 +16,23 @@
 # .gemini
 .gemini/settings.json
 
+# .handovers
+.handovers/*
+!.handovers/.keep
+
 # .kiro
 .kiro/steering/*
 .kiro/specs/*
 
 # .rulesync
+**/work-goal-creator/references/work_goal_past.xlsx
 
 # config
 config/settings.yaml
+
+# issues
+issues/draft/*
+!issues/draft/.keep
 
 # projects
 projects/*
@@ -31,6 +40,10 @@ projects/*
 
 # scripts
 scripts/backup/*
+
+# tmp
+tmp/*
+!tmp/.keep
 
 # workspace
 *.code-workspace

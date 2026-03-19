@@ -9,31 +9,28 @@
 ## セットアップ
 
 ```bash
-# 1. クローン
+# 1. リポジトリのクローン
 git clone <repository-url>
 cd ai-workspace
 
 # 2. 設定ファイル作成
 cp config/settings.yaml.example config/settings.yaml
 
-# 3. 開発対象のリポジトリを projects/ 以下に配置（必須）
+# 3. 開発対象リポジトリを projects/ に配置（必須）
+
+## git cloneする場合:
 git clone <repository-url> projects/your-repo
 
-# 4. MCP サーバー設定（任意）
+## symlinkを張る場合:
+ln -s /path/to/repo projects/your-repo
+
+# 4. 認証設定（任意）
 cp .env.example .env
-# .env に必要な認証情報を設定
 
-# Claude Code 用 MCP 設定
+# 5. MCP 設定（任意）
 cp .mcp.json.example .mcp.json
-
-# Cursor 用 MCP 設定
 cp .cursor/mcp.json.example .cursor/mcp.json
-
-# Gemini CLI 用 MCP 設定
 cp .gemini/settings.json.example .gemini/settings.json
-
-# 5. 通知テスト（任意）
-bash scripts/ntfy.sh "テスト通知"
 ```
 
 ### 設定ファイル
@@ -50,7 +47,7 @@ bash scripts/ntfy.sh "テスト通知"
 
 ### Claude Code / Gemini CLI / Codex
 
-**ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローンで配置し、これらを横断的に参照・編集する。
+**ai-workspace をルートとして開く**。開発対象リポジトリは **`projects/`** 配下にクローンまたはシンボリックリンクで配置し、これらを横断的に参照・編集する。
 
 ```bash
 # Claude Code
@@ -86,32 +83,32 @@ ai-workspace/
 ├── config/                     # 設定ファイル
 │   ├── settings.yaml           # ワークスペース設定（git 管理外）
 │   └── settings.yaml.example   # 設定サンプル
-├── projects/                   # 開発対象リポジトリを配置（git 管理外）
+├── projects/                   # 開発対象リポジトリ（クローン or symlink、git 管理外）
 ├── .kiro/                      # Kiro (Spec-Driven Development)（git 管理外）
-│   ├── settings/               # Kiro 設定テンプレート（git 管理）
-│   ├── steering/               # プロジェクト全体の方針・ルール（インスタンス固有）
+│   ├── settings/               # Kiro 設定テンプレート
+│   ├── steering/               # プロジェクト方針・ルール（インスタンス固有）
 │   └── specs/                  # 機能仕様・タスク（インスタンス固有）
 ├── .rulesync/                  # rules / skills / subagents の編集正本
-│   ├── rules/                  # ルール定義（git 管理）
-│   ├── skills/                 # スキル定義（git 管理）
-│   └── subagents/              # サブエージェント定義（git 管理）
+│   ├── rules/                  # ルール定義
+│   ├── skills/                 # スキル定義
+│   └── subagents/              # サブエージェント定義
 ├── .cursor/                    # Cursor 用設定
-│   ├── commands/kiro/          # Kiro コマンド（git 管理）
+│   ├── commands/kiro/          # Kiro コマンド
 │   ├── rules/                  # ルール（rulesync で生成）
 │   ├── mcp.json                # MCP 設定（git 管理外、*.example からコピー）
-│   └── mcp.json.example        # MCP 設定サンプル（git 管理）
+│   └── mcp.json.example        # MCP 設定サンプル
 ├── .claude/                    # Claude Code 用設定
-│   ├── commands/kiro/          # Kiro コマンド（git 管理）
+│   ├── commands/kiro/          # Kiro コマンド
 │   ├── rules/                  # ルール（rulesync で生成）
 │   └── settings.local.json     # 設定（rulesync で生成）
 ├── .mcp.json                   # Claude Code 用 MCP 設定（git 管理外、*.example からコピー）
-├── .mcp.json.example           # Claude Code 用 MCP 設定サンプル（git 管理）
+├── .mcp.json.example           # Claude Code 用 MCP 設定サンプル
 ├── .codex/                     # Codex CLI 用設定
-│   ├── prompts/kiro-*.md       # Kiro プロンプト（git 管理）
+│   ├── prompts/kiro-*.md       # Kiro プロンプト
 │   └── memories/               # メモリ（rulesync で生成）
 ├── .gemini/                    # Gemini CLI 用設定
 │   ├── settings.json           # MCP 設定（git 管理外、*.example からコピー）
-│   ├── settings.json.example   # MCP 設定サンプル（git 管理）
+│   ├── settings.json.example   # MCP 設定サンプル
 │   ├── memories/               # メモリ（rulesync で生成）
 │   └── skills/                 # スキル（rulesync で生成）
 ├── scripts/                    # ユーティリティスクリプト
@@ -120,7 +117,7 @@ ai-workspace/
 ├── AGENTS.md                   # エージェント設定マニフェスト（rulesync で生成・git 管理外）
 ├── CLAUDE.md                   # Claude プロジェクト指示（rulesync で生成・git 管理外）
 ├── GEMINI.md                   # Gemini CLI プロジェクト指示（rulesync で生成・git 管理外）
-├── ai-workspace.code-workspace # Cursor 用マルチルートワークスペース設定（git 管理）
+├── ai-workspace.code-workspace # Cursor 用マルチルートワークスペース設定
 └── rulesync.jsonc              # rulesync 設定
 ```
 
