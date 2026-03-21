@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ai-workspace用 claude ラッパー
+# projects/ 配下のディレクトリを --add-dir に自動追加して起動する
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+PROJECTS_DIR="${WORKSPACE_ROOT}/projects"
+
+add_dirs=()
+if [[ -d "${PROJECTS_DIR}" ]]; then
+  while IFS= read -r dir; do
+    add_dirs+=("${dir}")
+  done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -type d)
+fi
+
+if [[ ${#add_dirs[@]} -gt 0 ]]; then
+  exec claude --add-dir "${add_dirs[@]}" "$@"
+else
+  exec claude "$@"
+fi
