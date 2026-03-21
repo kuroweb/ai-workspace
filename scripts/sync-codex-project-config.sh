@@ -19,7 +19,9 @@ sync_subdir() {
     return
   fi
 
-  while IFS= read -r project_dir; do
+  local project_dir
+  while IFS= read -r -d '' project_dir; do
+    [[ -d "${project_dir}" ]] || continue
     local project_name
     project_name="$(basename "${project_dir}")"
     local project_subdir="${project_dir}/.codex/${subdir}"
@@ -30,14 +32,15 @@ sync_subdir() {
     fi
 
     mkdir -p "${link_root}"
-    while IFS= read -r entry_path; do
+    local entry_path
+    while IFS= read -r -d '' entry_path; do
       local entry_name
       entry_name="$(basename "${entry_path}")"
       local link_path="${link_root}/${entry_name}"
       local rel_target="../../../../projects/${project_name}/.codex/${subdir}/${entry_name}"
       ln -sfn "${rel_target}" "${link_path}"
-    done < <(find "${project_subdir}" -mindepth 1 -maxdepth 1)
-  done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -type d)
+    done < <(find "${project_subdir}" -mindepth 1 -maxdepth 1 -print0)
+  done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -print0)
 }
 
 # Codex は projects/*/.codex 配下を自動探索しないため、

@@ -9,9 +9,10 @@ SYNC_SCRIPT="${WORKSPACE_ROOT}/scripts/sync-codex-project-config.sh"
 
 add_dirs=()
 if [[ -d "${PROJECTS_DIR}" ]]; then
-  while IFS= read -r dir; do
-    add_dirs+=("${dir}")
-  done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -type d)
+  while IFS= read -r -d '' entry; do
+    [[ -d "${entry}" ]] || continue
+    add_dirs+=("${entry}")
+  done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -print0)
 fi
 
 "${SYNC_SCRIPT}"
