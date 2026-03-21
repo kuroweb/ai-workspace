@@ -9,6 +9,7 @@
 .mcp.json
 
 # .codex
+.codex/*/projects/*
 
 # .cursor
 .cursor/mcp.json
