@@ -3,5 +3,8 @@
     "deny": [
       "Read(.env)"
     ]
+  },
+  "env": {
+    "CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD": "1"
   }
 }
