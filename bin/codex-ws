@@ -18,7 +18,7 @@ fi
 "${SYNC_SCRIPT}"
 
 if [[ ${#add_dirs[@]} -gt 0 ]]; then
-  exec codex --add-dir "${add_dirs[@]}" "$@"
+  exec codex --sandbox workspace-write --add-dir "${add_dirs[@]}" "$@"
 else
-  exec codex "$@"
+  exec codex --sandbox workspace-write "$@"
 fi
