@@ -153,4 +153,3 @@ ai-workspace/
 ```bash
 rulesync generate
 ```
-
