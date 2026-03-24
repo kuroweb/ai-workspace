@@ -1,5 +1,1 @@
-ntfy:
-  server: "https://ntfy.sh"
-  topic: "my-topic"
-
 git_command: false

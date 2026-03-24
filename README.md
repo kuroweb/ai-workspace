@@ -37,7 +37,7 @@ cp .gemini/settings.json.example .gemini/settings.json
 
 | ファイル | 用途 |
 |----------|------|
-| **config/settings.yaml** | ntfy トピック設定、`git_command`（AI の git 実行可否: `true` / `false`、未設定時は `false`） |
+| **config/settings.yaml** | `git_command`（AI の git 実行可否: `true` / `false`、未設定時は `false`） |
 | **.env** | 各種認証情報（API キー、トークン等） |
 | **.mcp.json** | Claude Code 用 MCP サーバー設定（`.mcp.json.example` をコピーして使用） |
 | **.cursor/mcp.json** | Cursor 用 MCP サーバー設定（`.cursor/mcp.json.example` をコピーして使用） |
@@ -112,8 +112,7 @@ ai-workspace/
 │   ├── memories/               # メモリ（rulesync で生成）
 │   └── skills/                 # スキル（rulesync で生成）
 ├── scripts/                    # ユーティリティスクリプト
-│   ├── agent-import.sh         # 設定インポートスクリプト
-│   └── ntfy.sh                 # 通知スクリプト
+│   └── agent-import.sh         # 設定インポートスクリプト
 ├── AGENTS.md                   # エージェント設定マニフェスト（rulesync で生成・git 管理外）
 ├── CLAUDE.md                   # Claude プロジェクト指示（rulesync で生成・git 管理外）
 ├── GEMINI.md                   # Gemini CLI プロジェクト指示（rulesync で生成・git 管理外）
@@ -155,8 +154,3 @@ ai-workspace/
 rulesync generate
 ```
 
-### ntfy 通知テスト
-
-```bash
-bash scripts/ntfy.sh "テスト通知"
-```
