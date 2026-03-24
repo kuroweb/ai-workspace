@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# ai-workspace用 agent ラッパー
+# agent には --add-dir がないため、workspace ルートを明示して projects/ 配下を含めて起動する
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKSPACE_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+SYNC_SCRIPT="${WORKSPACE_ROOT}/scripts/sync-cursor-project-config.sh"
+
+"${SYNC_SCRIPT}"
+
+exec agent --workspace "${WORKSPACE_ROOT}" "$@"

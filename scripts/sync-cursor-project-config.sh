@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# projects/*/.codex/{skills,memories,prompts} を
-# ワークスペース側 .codex/*/projects/<project>/ に symlink 同期する。
+# projects/*/.cursor/{skills,rules,commands,agents} を
+# ワークスペース側 .cursor/*/projects/<project>/ に symlink 同期する。
 
 set -euo pipefail
 
@@ -10,12 +10,12 @@ PROJECTS_DIR="${WORKSPACE_ROOT}/projects"
 
 sync_subdir() {
   local subdir="$1"
-  local projects_root="${WORKSPACE_ROOT}/.codex/${subdir}/projects"
+  local projects_root="${WORKSPACE_ROOT}/.cursor/${subdir}/projects"
 
   mkdir -p "${projects_root}"
 
   # projects/ 自体が無いときは同期対象が無いのでここで終了するが、
-  # 過去の実行で作られた .codex/*/projects/<name>/ が残ると誤解を招くため掃除する。
+  # 過去の実行で作られた .cursor/*/projects/<name>/ が残ると誤解を招くため掃除する。
   if [[ ! -d "${PROJECTS_DIR}" ]]; then
     local orphan
     while IFS= read -r -d '' orphan; do
@@ -39,7 +39,7 @@ sync_subdir() {
     [[ -d "${project_dir}" ]] || continue
     local project_name
     project_name="$(basename "${project_dir}")"
-    local project_subdir="${project_dir}/.codex/${subdir}"
+    local project_subdir="${project_dir}/.cursor/${subdir}"
     local link_root="${projects_root}/${project_name}"
 
     if [[ ! -d "${project_subdir}" ]]; then
@@ -64,14 +64,15 @@ sync_subdir() {
       local entry_name
       entry_name="$(basename "${entry_path}")"
       local link_path="${link_root}/${entry_name}"
-      local rel_target="../../../../projects/${project_name}/.codex/${subdir}/${entry_name}"
+      local rel_target="../../../../projects/${project_name}/.cursor/${subdir}/${entry_name}"
       ln -sfn "${rel_target}" "${link_path}"
     done < <(find "${project_subdir}" -mindepth 1 -maxdepth 1 -print0)
   done < <(find "${PROJECTS_DIR}" -mindepth 1 -maxdepth 1 -print0)
 }
 
-# Codex は projects/*/.codex 配下を自動探索しないため、
-# ワークスペース側 .codex/*/projects に symlink を張って明示的に読ませる。
+# Cursor が projects/*/.cursor を自動でマージしない場合に、
+# ワークスペース側 .cursor/*/projects に symlink を張って集約する。
 sync_subdir "skills"
-sync_subdir "memories"
-sync_subdir "prompts"
+sync_subdir "rules"
+sync_subdir "commands"
+sync_subdir "agents"

@@ -1,9 +1,6 @@
 ---
 name: issue-creator
-description: >-
-  issues/draft/<slug>/issue.md を自動生成する軽量スキル。仕様駆動（Kiro）までしない調査・タスク・メモの記録に使用。
-  トリガー時は、他の作業より先に必ず issues/draft/<slug>/ と issue.md を作成してから他に進む。 トリガー例：「issues
-  にメモして」「調査用の issue 作って」「issue を作成」。
+description: issues/draft/<slug>/issue.md を自動生成する軽量スキル。仕様駆動（Kiro）までしない調査・タスク・メモの記録に使用。 トリガー時は、他の作業より先に必ず issues/draft/<slug>/ と issue.md を作成してから他に進む。 トリガー例：「issues にメモして」「調査用の issue 作って」「issue を作成」。
 ---
 # Issue Creator
 

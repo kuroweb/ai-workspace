@@ -13,6 +13,7 @@
 
 # .cursor
 .cursor/mcp.json
+.cursor/*/projects/*
 
 # .gemini
 .gemini/settings.json

@@ -1,12 +1,6 @@
 ---
 name: claude-ws
-description: >
-  Claude Code CLI（Anthropic）を `bin/claude-ws` 経由で使用して、コードや文言について相談・レビューを行う。
-
-  トリガー: "claude-ws", "claude-wsと相談", "claude-wsに聞いて", "ワークスペースのコードレビュー",
-  "複数リポジトリの差分レビュー"
-
-  使用場面: (1) 文言・メッセージの検討、(2) コードレビュー、(3) 設計の相談、(4) バグ調査、(5) 解消困難な問題の調査
+description: 'Claude Code CLI（Anthropic）を `bin/claude-ws` 経由で使用して、コードや文言について相談・レビューを行う。 トリガー: "claude-ws", "claude-wsと相談", "claude-wsに聞いて", "ワークスペースのコードレビュー", "複数リポジトリの差分レビュー" 使用場面: (1) 文言・メッセージの検討、(2) コードレビュー、(3) 設計の相談、(4) バグ調査、(5) 解消困難な問題の調査'
 ---
 # claude-ws
 
