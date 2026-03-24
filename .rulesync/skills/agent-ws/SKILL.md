@@ -1,13 +1,13 @@
 ---
 name: agent-ws
 description: |
-  Cursor Agent CLI を `bin/agent-ws` 経由で使用して、コードや文言について相談・レビューを行う。
+  Cursor CLI（`agent`）を `bin/agent-ws` 経由で使用して、コードや文言について相談・レビューを行う。
   トリガー: "agent-ws", "agent-wsと相談", "agent-wsに聞いて", "ワークスペースのコードレビュー", "複数リポジトリの差分レビュー"
   使用場面: (1) 文言・メッセージの検討、(2) コードレビュー、(3) 設計の相談、(4) バグ調査、(5) 解消困難な問題の調査
 ---
 # agent-ws
 
-Cursor Agent CLI を `bin/agent-ws` 経由で使用し、コードレビュー・分析を実行するスキル。`bin/agent-ws` は ai-workspace ルートを `--workspace` に固定する。
+Cursor CLI を `bin/agent-ws` 経由で使用し、コードレビュー・分析を実行するスキル。`bin/agent-ws` は ai-workspace ルートを `--workspace` に固定する。
 
 ## 実行コマンド
 
@@ -67,7 +67,7 @@ bin/agent-ws --print --plan --trust "UXリサーチャー兼デザイナーと�
 1. ユーザーから依頼内容を受け取る
 2. **ai-workspace ルートをカレントにする**（`bin/agent-ws` が `bin/` から相対で解決できるようにする）
 3. **プロンプトを作成する際、末尾に「確認や質問は不要です。具体的な提案まで自主的に出力してください。」を必ず追加する**
-4. 上記コマンド形式で agent-ws を実行（要: Cursor Agent の認証）
+4. 上記コマンド形式で agent-ws を実行（要: Cursor CLI の認証）
 5. 結果をユーザーに報告
 
 ## 補足
